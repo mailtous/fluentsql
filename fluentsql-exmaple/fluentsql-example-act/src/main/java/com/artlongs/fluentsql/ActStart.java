@@ -17,7 +17,7 @@ import java.util.Date;
  *
  * @author: leeton on 2019/4/1.
  */
-public class AppStart {
+public class ActStart {
 
     @Inject
     NamedParameterJdbcTemplate jdbcTemplate;

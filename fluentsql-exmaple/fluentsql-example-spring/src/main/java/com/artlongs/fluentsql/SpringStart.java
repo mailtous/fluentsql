@@ -10,10 +10,10 @@ import java.util.concurrent.CountDownLatch;
 
 @SpringBootApplication
 @ComponentScan({"com.artlongs"})
-public class AppStart {
+public class SpringStart {
 
     public static void main(String[] args) throws InterruptedException {
-        ConfigurableApplicationContext context = SpringApplication.run(AppStart.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(SpringStart.class, args);
 //        CountDownLatch closeLatch = context.getBean(CountDownLatch.class);
 //        closeLatch.await();
     }
