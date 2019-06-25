@@ -10,10 +10,10 @@ import java.util.Date;
  */
 public class User {
     private Integer id;
-    private String name;
+    private String userName;
     private BigDecimal money;
     private Integer deptId;
-    private Date createDate;
+    private Date createTime;
 
     public Integer getId() {
         return id;
@@ -23,12 +23,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public BigDecimal getMoney() {
@@ -47,11 +47,11 @@ public class User {
         this.deptId = deptId;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

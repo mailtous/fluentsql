@@ -9,6 +9,7 @@ import org.osgl.mvc.annotation.GetAction;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -21,22 +22,22 @@ public class AppStart {
     @Inject
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    @GetAction("/test/lq/user/{id}")
+    @GetAction("/user/{id}")
     public User getUserById(Integer id) {
-        Query<User> lq = new Lq<User>(User.class, jdbcTemplate).andEq(User::getId,1);
+        Query<User> lq = new Lq<User>(User.class, jdbcTemplate).andEq(User::getId,id);
         User user = lq.to();
         return user;
     }
 
-    @GetAction("/test/lq/adduser")
+    @GetAction("/adduser")
     public User addUser() {
         User user = new User();
-        user.setId(1);
-        user.setName("jack");
+        user.setId(8);
+        user.setUserName("jack");
         user.setDeptId(1);
-        user.setDeptId(1);
-        user.setCreateDate(new Date());
-        new Lq<User>(User.class, jdbcTemplate).save(user);
+        user.setMoney(new BigDecimal(1000.22));
+        user.setCreateTime(new Date());
+        new Lq<User>(User.class, jdbcTemplate).toSave(user);
 
         return user;
     }
