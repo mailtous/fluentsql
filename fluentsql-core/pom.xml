@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>fluentsql</artifactId>
+        <groupId>com.artlongs.fluentsql</groupId>
+        <version>0.0.1-snapshot</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>fluentsql-core</name>
+    <artifactId>fluentsql-core</artifactId>
+    <version>0.0.1-snapshot</version>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.osgl</groupId>
+            <artifactId>osgl-tool</artifactId>
+            <version>1.19.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.trigersoft</groupId>
+            <artifactId>jaque</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+    </dependencies>
+
+</project>
