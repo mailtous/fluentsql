@@ -137,6 +137,11 @@ public abstract class LambdaQuery<T> extends BaseQuery<T> {
         return this;
     }
 
+    public LambdaQuery<T> leftJoin(Class joinTableClass) {
+        super.leftJoin(joinTableClass);
+        return this;
+    }
+
     // =============== and ==============================
     public LambdaQuery<T> and(LambdaQuery<T>... manyQe) {
         super.and(manyQe);
@@ -298,23 +303,5 @@ public abstract class LambdaQuery<T> extends BaseQuery<T> {
 
     }
 
-    public static void main(String[] args) throws Exception {
-/*
-        String sql = new Lq<>(SysUser.class)
-                .select(SysUser::getDeptId)
-                .select(new Attr<>(SysDept::getDeptName))
-                .leftJoin(SysDept.class, new Attr<>(SysUser::getDeptId))
-                .andLike(SysUser::getDeptId, 1)
-                .asc(SysUser::getDeptId)
-                .desc(SysUser::getUserName)
-                .group(SysUser::getDeptId)
-                .having(SysUser::getDeptId, Qe.Opt.GT, 0)
-                .build();
-
-        System.out.println("sql=" + sql);
-*/
-
-
-    }
 
 }

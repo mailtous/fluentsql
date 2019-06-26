@@ -229,6 +229,19 @@ public abstract class BaseQuery<T> implements Query{
         return this;
     }
 
+    /**
+     * 约定:关联从表的字段名默认为: 从表字+"_id",全小写 underline 风格
+     * eg:User 关联部门 Dept 则为--> dept_id
+     * @param joinTableClass
+     * @return
+     */
+    public BaseQuery<T> leftJoin(Class joinTableClass) {
+        String joinTableName = getTableName(joinTableClass);
+        String mainJoinKey = joinTableName + "_id";
+        leftJoin(joinTableClass, "id",mainJoinKey);
+        return this;
+    }
+
     public BaseQuery<T> leftJoin(Class<T> clz, String joinTableKey, String mainTableKey) {
         return leftJoin(getTableName(clz), joinTableKey, mainTableKey);
     }
@@ -236,6 +249,7 @@ public abstract class BaseQuery<T> implements Query{
     public BaseQuery<T> leftJoin(Class<T> clz, String mainTableKey) {
         return leftJoin(getTableName(clz), "id", mainTableKey);
     }
+
 
     // =============== and ==============================
 

@@ -22,10 +22,10 @@ public class Lq<T> extends Qe<T> {
 
     public static void main(String[] args) throws Exception {
         String sql = new Lq<>(User.class)
-                .select(User::getDeptId)
-                .select(new Attr<>(Dept::getName))
-                .leftJoin(Dept.class, new Attr<>(User::getDeptId))
-                .andLike(User::getDeptId, 1)
+                .select(User::getUserName)
+                .select(new Attr<>(Dept::getDeptName))
+                .leftJoin(Dept.class)
+                .andLike(User::getUserName, "jack")
                 .asc(User::getDeptId)
                 .desc(User::getUserName)
                 .group(User::getDeptId)

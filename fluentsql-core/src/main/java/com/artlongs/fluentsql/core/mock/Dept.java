@@ -7,7 +7,7 @@ package com.artlongs.fluentsql.core.mock;
  */
 public class Dept {
     private Integer id;
-    private String name;
+    private String deptName;
 
     public Integer getId() {
         return id;
@@ -17,11 +17,11 @@ public class Dept {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDeptName() {
+        return deptName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 }
