@@ -1,5 +1,6 @@
 # fluent-sql
 Lambda 风格的流式 SQL 查询工具,支持多表 lefjoin,from(子表),sum case , iif ,group by(子表属性)...
+集成了JDBCTEMPLATE实现CRUD,分页查询等. 自我感觉良好,有了这个小工具,可以忘却 Hibernate,Mybatis...
 
 # 约定: 
 1. 数据库字段默认风格是全小写加下划线分隔的 underline 风格
