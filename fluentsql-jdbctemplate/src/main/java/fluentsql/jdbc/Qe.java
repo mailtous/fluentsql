@@ -75,7 +75,7 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public T to(Class tClass) {
-        List<T> list = getList(buildSymbolsql(), toJdbdParams(params), tClass);
+        List<T> list = getList(buildSymbolsql(), toJdbcParams(params), tClass);
         return 0 == list.size() ? null : list.get(0);
     }
 
@@ -89,18 +89,18 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public List toList(Class tClass) {
-        return getList(buildSymbolsql(), toJdbdParams(this.params), tClass);
+        return getList(buildSymbolsql(), toJdbcParams(this.params), tClass);
     }
 
     public boolean toDel() {
         checkJdbc(jdbcTemplate);
-        return jdbcTemplate.update(delete().buildSymbolsql(), toJdbdParams(params)) > 0;
+        return jdbcTemplate.update(delete().buildSymbolsql(), toJdbcParams(params)) > 0;
     }
 
     public int toUpdate(Object entity) {
         checkJdbc(jdbcTemplate);
         String symbolSql = update(entity).buildSymbolsql();
-        Map<String, Object> jdbdParams = toJdbdParams(params);
+        Map<String, Object> jdbdParams = toJdbcParams(params);
         int rows = jdbcTemplate.update(symbolSql, jdbdParams);
         clearMap(jdbdParams);
         symbolSql = null;
@@ -120,7 +120,7 @@ public class Qe<T> extends LambdaQuery<T> {
     public int toSave(Object entity) {
         checkJdbc(jdbcTemplate);
         String symbolSql = save(entity).buildSymbolsql();
-        Map<String, Object> jdbdParams = toJdbdParams(params);
+        Map<String, Object> jdbdParams = toJdbcParams(params);
         int rows = jdbcTemplate.update(symbolSql, jdbdParams);
         clearMap(jdbdParams);
         symbolSql = null;
@@ -161,7 +161,7 @@ public class Qe<T> extends LambdaQuery<T> {
             boolean offsetStartZero = false;
             long offset = (pageNumber - 1) * pageSize + (offsetStartZero ? 0 : 1);
             String pageSql = getMysqlLimit(this.buildSymbolsql(), offset, pageSize);
-            Map<String, Object> jdbdParams = toJdbdParams(params);
+            Map<String, Object> jdbdParams = toJdbcParams(params);
             list = jdbcTemplate.query(pageSql, jdbdParams, new BeanPropertyRowMapper<>(clazz));
             clearMap(jdbdParams);
         }
@@ -200,17 +200,17 @@ public class Qe<T> extends LambdaQuery<T> {
    public static void main(String[] args) throws Exception {
         String sql = new Qe(User.class)
             .select("user_uame")
-            .andIn("dept_id", new Qe(Dept.class).select("id").andGt("id", 0))
-//                .sum("id", Dept.class)
+//            .andIn("dept_id", new Qe(Dept.class).select("id").andGt("id", 0))
+                .sum("id", Dept.class)
 //                .sumCase("id", 1, "money", "money")
-//                .leftJoin(Dept.class,"dept_id")
-//                .andLike("name", "alice")
-//                .andIn("id", new Integer[]{1, 2, 3})
-//                .andBetween("createDate", new Date(), new Date())
-//                .group("dept_id")
-//                .having("dept_id", Opt.GT, 0)
-//                .asc("dept_id")
-//                .desc("user_uame")
+                .leftJoin(Dept.class,"dept_id")
+                .andLike("name", "alice")
+                .andIn("id", new Integer[]{1, 2, 3})
+                .andBetween("createDate", new Date(), new Date())
+                .group("dept_id")
+                .having("dept_id", Opt.GT, 0)
+                .asc("dept_id")
+                .desc("user_uame")
             .build();
 
         System.out.println("sql=" + sql);

@@ -24,7 +24,7 @@ public abstract class BaseQuery<T> implements Query{
     protected StringBuffer count = new StringBuffer(32);
     protected StringBuffer sum = new StringBuffer(32);
     protected StringBuffer casethen = new StringBuffer(32);
-    protected StringBuffer sumcasethen = new StringBuffer(32);
+    protected StringBuffer sumcasethen = new StringBuffer(128);
     protected StringBuffer select = new StringBuffer(32);
     protected StringBuffer subselect = new StringBuffer(128);
     protected StringBuffer from = new StringBuffer(32);
@@ -215,7 +215,9 @@ public abstract class BaseQuery<T> implements Query{
         if (null == mainTableName || "".equals(mainTableName)) throw new RuntimeException("主表不能为空。");
         this.join
                 .append(LEFTJOIN.symbol)
+                .append("`")
                 .append(joinTableName)
+                .append("`")
                 .append(ON.symbol)
                 .append(this.mainTableName)
                 .append(".")
@@ -576,7 +578,7 @@ public abstract class BaseQuery<T> implements Query{
         this.params.put(key, v1);
     }
 
-    public Map<String, Object> toJdbdParams(Map<String, Object> params) {
+    public Map<String, Object> toJdbcParams(Map<String, Object> params) {
         Map<String, Object> jMap = new HashMap<>(params.size());
         for (String k : params.keySet()) {
             jMap.put(k.replace(":", ""), params.get(k));
@@ -728,7 +730,7 @@ public abstract class BaseQuery<T> implements Query{
     }
 
     private boolean isNotSubSelect(Object v) {
-        return !(v.toString().startsWith("(SELECT"));
+        return !((""+v).toUpperCase().startsWith("(SELECT"));
     }
 
     private static final String reg = "/(\\\\%27)|(/\\*(?:.|[\\n\\r])*?\\*/)|(\\b(select|union|update|and|or|delete|insert|trancate|" +
@@ -777,6 +779,7 @@ public abstract class BaseQuery<T> implements Query{
         sql = replaceTag(sql, "{update}", update);
         sql = replaceTag(sql, "{insert}", insert);
         this.symbolsql = sql;
+        sql=null;
         return this.symbolsql;
     }
 
@@ -826,27 +829,27 @@ public abstract class BaseQuery<T> implements Query{
         if (this.from.length() == 0) {
             this.from.append(FROM.symbol);
             if (null != mainTableName && !"".equals(mainTableName)) {
-                this.from.append(mainTableName).append(" AS ").append(mainTableName).append(" ");
+                this.from.append("`").append(mainTableName).append("`").append(" AS ").append(mainTableName).append(" ");
             }
         }
         return this.from;
     }
 
     public void clear() {
-        del = new StringBuffer();
-        count = new StringBuffer();
-        sum = new StringBuffer();
-        casethen = new StringBuffer();
-        sumcasethen = new StringBuffer();
-        select = new StringBuffer();
-        subselect = new StringBuffer();
-        from = new StringBuffer();
-        join = new StringBuffer();
-        where = new StringBuffer();
-        group = new StringBuffer();
-        having = new StringBuffer();
-        order = new StringBuffer();
-        limit = new StringBuffer();
+        del = null;
+        count = null;
+        sum = null;
+        casethen = null;
+        sumcasethen = null;
+        select = null;
+        subselect = null;
+        from = null;
+        join = null;
+        where = null;
+        group = null;
+        having = null;
+        order = null;
+        limit = null;
         link = null;
         clearMap(params);
     }

@@ -20,6 +20,20 @@
             <artifactId>act</artifactId>
             <version>1.8.21</version>
         </dependency>
+        <!-- fluentsql + h2  BEGIN -->
+        <dependency>
+            <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <!--<version>1.4.197</version>-->
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.artlongs.fluentsql</groupId>
+            <artifactId>fluentsql-jdbctemplate</artifactId>
+            <version>0.0.1-snapshot</version>
+        </dependency>
+        <!-- fluentsql + h2  END -->
     </dependencies>
 
 </project>
