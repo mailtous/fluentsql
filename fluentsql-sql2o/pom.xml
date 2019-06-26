@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>fluentsql</artifactId>
+        <groupId>com.artlongs.fluentsql</groupId>
+        <version>0.0.1-snapshot</version>
+    </parent>
+
+    <name>fluentsql-sql2o</name>
+    <groupId>com.artlongs.fluentsql</groupId>
+    <artifactId>fluentsql-sql2o</artifactId>
+    <version>0.0.1-snapshot</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.sql2o</groupId>
+            <artifactId>sql2o</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.artlongs.fluentsql</groupId>
+            <artifactId>fluentsql-core</artifactId>
+            <version>0.0.1-snapshot</version>
+        </dependency>
+
+<!--        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.1</version>
+        </dependency>-->
+    </dependencies>
+
+
+</project>

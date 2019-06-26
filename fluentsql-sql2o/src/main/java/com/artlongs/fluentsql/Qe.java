@@ -1,4 +1,4 @@
-package fluentsql.jdbc;
+package com.artlongs.fluentsql;
 
 import com.artlongs.fluentsql.core.Assert;
 import com.artlongs.fluentsql.core.BaseQuery;
@@ -6,9 +6,10 @@ import com.artlongs.fluentsql.core.LambdaQuery;
 import com.artlongs.fluentsql.core.Page;
 import com.artlongs.fluentsql.core.mock.Dept;
 import com.artlongs.fluentsql.core.mock.User;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.SingleColumnRowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.sql2o.Connection;
+import org.sql2o.Query;
+import org.sql2o.Sql2o;
+import org.sql2o.Sql2oException;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 public class Qe<T> extends LambdaQuery<T> {
     protected static final Logger logger = Logger.getLogger("Qe");
 
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private Sql2o sql2o;
 
     public Qe() {
     }
@@ -36,19 +37,19 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
 
-    public Qe(Class<T> clz, NamedParameterJdbcTemplate jdbcTemplate) {
-        init(clz, getTableName(clz), jdbcTemplate);
+    public Qe(Class<T> clz, Sql2o sql2o) {
+        init(clz, getTableName(clz), sql2o);
     }
 
-    public Qe(NamedParameterJdbcTemplate jdbcTemplate) {
-        init(null, null, jdbcTemplate);
+    public Qe(Sql2o sql2o) {
+        init(null, null, sql2o);
     }
 
-    protected Qe<T> init(Class<T> clz, String mainTableName, NamedParameterJdbcTemplate jdbcTemplate) {
+    protected Qe<T> init(Class<T> clz, String mainTableName, Sql2o jdbcTemplate) {
         this.id = hashCode();
         this.clz = clz;
         this.mainTableName = mainTableName;
-        this.jdbcTemplate = jdbcTemplate;
+        this.sql2o = jdbcTemplate;
         return this;
     }
 
@@ -94,37 +95,33 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public boolean toDel() {
-        checkProvider(jdbcTemplate);
-        return jdbcTemplate.update(delete().buildSymbolsql(), toJdbcParams(params)) > 0;
+        checkProvider(sql2o);
+        return write(delete().buildSymbolsql(), params) > 0;
     }
 
     public int toUpdate(Object entity) {
-        checkProvider(jdbcTemplate);
+        checkProvider(sql2o);
         String symbolSql = update(entity).buildSymbolsql();
-        Map<String, Object> jdbdParams = toJdbcParams(params);
-        int rows = jdbcTemplate.update(symbolSql, jdbdParams);
-        clearMap(jdbdParams);
-        symbolSql = null;
+        int rows = write(symbolSql, params);
+        clear();
         return rows;
     }
 
-    public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
-        checkProvider(jdbcTemplate);
-        int[] rows = jdbcTemplate.batchUpdate(symbolsql, batchValues);
+/*    public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
+        checkProvider(sql2o);
+        int[] rows = sql2o.batchUpdate(symbolsql, batchValues);
         for (Map<String, ?> batchValue : batchValues) {
             clearMap(batchValue);
         }
         symbolsql = null;
         return rows;
-    }
+    }*/
 
     public int toSave(Object entity) {
-        checkProvider(jdbcTemplate);
+        checkProvider(sql2o);
         String symbolSql = save(entity).buildSymbolsql();
-        Map<String, Object> jdbdParams = toJdbcParams(params);
-        int rows = jdbcTemplate.update(symbolSql, jdbdParams);
-        clearMap(jdbdParams);
-        symbolSql = null;
+        int rows = write(symbolSql, params);
+        clear();
         return rows;
     }
 
@@ -146,13 +143,12 @@ public class Qe<T> extends LambdaQuery<T> {
      * @return
      */
     private Page<T> getPage(Class<T> clazz, Page page) {
-        checkProvider(jdbcTemplate);
+        checkProvider(sql2o);
         if (this.limit.length()>0) {
             throw new RuntimeException("分页参数不要通过[limit]传入.");
         }
         String countSql = this.count();
-        List<Long> countList = jdbcTemplate.queryForList(countSql, new HashMap<>(), Long.class);
-        Long count = countList.get(0);
+        Long count = single(countSql, new HashMap<>(), Long.class);
         List<T> list = null;
         if (count == 0) {
             list = Collections.emptyList();
@@ -163,7 +159,7 @@ public class Qe<T> extends LambdaQuery<T> {
             long offset = (pageNumber - 1) * pageSize + (offsetStartZero ? 0 : 1);
             String pageSql = getMysqlLimit(this.buildSymbolsql(), offset, pageSize);
             Map<String, Object> jdbdParams = toJdbcParams(params);
-            list = jdbcTemplate.query(pageSql, jdbdParams, new BeanPropertyRowMapper<>(clazz));
+            list = getList(pageSql, params,clazz);
             clearMap(jdbdParams);
         }
         page.setTotal(count);
@@ -173,17 +169,43 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public List getList(String sql, Map<String, Object> params, Class<T> tClass) {
-        checkProvider(jdbcTemplate);
-        List<T> list = jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(tClass));
+        checkProvider(sql2o);
+        List<T> list = new ArrayList<>();
+        try (Connection con = sql2o.open()) {
+            Query q = con.createQuery(sql);
+            setSql2oParam(q, params);
+            list = q.executeAndFetch(tClass);
+        }
         clearMap(params);
         return 0 == list.size() ? new ArrayList<>() : list;
     }
 
-    public <T> T single(String sql, Map<String, Object> params, Class tClass) {
-        checkProvider(jdbcTemplate);
-        List<T> list = jdbcTemplate.query(sql, params, new SingleColumnRowMapper<>(tClass));
+    public <T> T single(String sql, Map<String, Object> params, Class<T> tClass) {
+        checkProvider(sql2o);
+        T result = null;
+        try (Connection con = sql2o.open()) {
+            Query q = con.createQuery(sql);
+            setSql2oParam(q, params);
+            result = q.executeAndFetchFirst(tClass);
+        }
         clearMap(params);
-        return list.size() == 0 ? null : list.get(0);
+        return result;
+    }
+
+    public int write(String sql, Map<String, Object> params) {
+        checkProvider(sql2o);
+        Connection con = null;
+        try {
+            con = sql2o.beginTransaction();
+            Query q = con.createQuery(sql);
+            setSql2oParam(q, params);
+            q.executeUpdate();
+            con.commit();
+        } catch (Exception ex) {
+            throw new Sql2oException("写入数据库出错:"+ex);
+        }
+        clearMap(params);
+        return con.getResult();
     }
 
     public <T> T getObj(String sql, Map<String, Object> params, Class tClass) {
@@ -191,8 +213,14 @@ public class Qe<T> extends LambdaQuery<T> {
         return list.size() == 0 ? null : list.get(0);
     }
 
-    private void checkProvider(NamedParameterJdbcTemplate jdbcTemplate) {
-        Assert.isNull(jdbcTemplate,"NamedParameterJdbcTemplate 不能为 NULL,请先传入.");
+    private void checkProvider(Sql2o sql2o) {
+        Assert.isNull(sql2o,"Sql2o 不能为 NULL,请先传入.");
+    }
+
+    private void setSql2oParam(Query query, Map<String,Object> parms) {
+        for (String k : parms.keySet()) {
+            query.addParameter(k.replace(":", ""), parms.get(k));
+        }
     }
 
     // ====== 集成查询方法 END ====================================================================================================
