@@ -2,6 +2,8 @@ package com.artlongs.fluentsql.core;
 
 /**
  * Func : SQl 的 Function
+ * 之所以没把 SUM 放进来,是因为我觉得 SUM太常用了,放到一级FUNC比较好
+ *
  * 注意:如果使用在子查询里则要指定拼写为 Spell.UNDERLINE
  *
  * @author: leeton on 2019/6/18.
@@ -81,7 +83,7 @@ public class Qf {
         return funcSql.append(" ) AS ").append(as).toString();
     }
 
-    public enum FUNC {
+    public enum FUNC {//之所以没把 SUM 放进来,是因为我觉得 SUM太常用了,放到一级FUNC比较好
         IFNULL, MAX, MIN, COUNT
     }
 

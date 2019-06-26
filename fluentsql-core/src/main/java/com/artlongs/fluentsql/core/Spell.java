@@ -1,7 +1,7 @@
 package com.artlongs.fluentsql.core;
 
 /**
- * Func : 字段的拼写样式
+ * Func : 字段的拼写风格
  *
  * @author: leeton on 2019/6/18.
  */

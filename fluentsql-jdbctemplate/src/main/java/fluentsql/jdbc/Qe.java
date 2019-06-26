@@ -64,8 +64,8 @@ public class Qe<T> extends LambdaQuery<T> {
         Qe qe = new Qe(this.mainTableName);
         qe.where = this.where;
         qe.join = this.join;
-        qe.params = this.params;
-        qe.count.append("SELECT COUNT(1) FROM ").append(this.mainTableName);
+        qe.params.putAll(this.params);
+        qe.count.append("SELECT COUNT(1)");
         return qe.build();
     }
 
@@ -198,20 +198,20 @@ public class Qe<T> extends LambdaQuery<T> {
 
 
    public static void main(String[] args) throws Exception {
-        String sql = new Qe(User.class)
-            .select("user_uame")
+       String sql = new Qe(User.class)
+               .select("user_uame")
 //            .andIn("dept_id", new Qe(Dept.class).select("id").andGt("id", 0))
-                .sum("id", Dept.class)
+               .sum("id", Dept.class)
 //                .sumCase("id", 1, "money", "money")
-                .leftJoin(Dept.class,"dept_id")
-                .andLike("name", "alice")
-                .andIn("id", new Integer[]{1, 2, 3})
-                .andBetween("createDate", new Date(), new Date())
-                .group("dept_id")
-                .having("dept_id", Opt.GT, 0)
-                .asc("dept_id")
-                .desc("user_uame")
-            .build();
+               .leftJoin(Dept.class)
+               .andLike("user_uame", "alice")
+               .andIn("id", new Integer[]{1, 2, 3})
+               .andBetween("create_date", new Date(), new Date())
+               .group("dept_id")
+               .having("dept_id", Opt.GT, 0)
+               .asc("dept_id")
+               .desc("user_uame")
+               .build();
 
         System.out.println("sql=" + sql);
 
