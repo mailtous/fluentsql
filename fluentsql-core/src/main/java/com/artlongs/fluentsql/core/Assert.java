@@ -1,7 +1,5 @@
 package com.artlongs.fluentsql.core;
 
-import static sun.jvm.hotspot.utilities.Assert.that;
-
 /**
  * Func :
  *
@@ -28,6 +26,10 @@ public class Assert {
         that(false==test, throwMsg);
     }
 
-
+    public static void that(boolean test, String throwMsg) {
+        if (!test) {
+            throw new RuntimeException(throwMsg);
+        }
+    }
 
 }
