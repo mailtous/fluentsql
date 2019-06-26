@@ -13,8 +13,8 @@
     <modules>
         <module>fluentsql-core</module>
         <module>fluentsql-jdbctemplate</module>
-        <module>fluentsql-exmaple</module>
         <module>fluentsql-sql2o</module>
+        <module>fluentsql-exmaple</module>
     </modules>
 
     <properties>

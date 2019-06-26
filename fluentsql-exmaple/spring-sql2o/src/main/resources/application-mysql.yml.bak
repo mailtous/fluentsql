@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://172.0.0.1:3306/act-test?useUnicode=true&characterEncoding=utf8&useAffectedRows=true
+    username: root
+    password: root
+
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      pool-name: HikariPool

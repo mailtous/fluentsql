@@ -77,8 +77,8 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public T to(Class tClass) {
-        List<T> list = getList(buildSymbolsql(), toJdbcParams(params), tClass);
-        return 0 == list.size() ? null : list.get(0);
+        T obj = single(buildSymbolsql(), params, tClass);
+        return obj;
     }
 
     public Long toCount() {
@@ -91,7 +91,7 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public List toList(Class tClass) {
-        return getList(buildSymbolsql(), toJdbcParams(this.params), tClass);
+        return getList(buildSymbolsql(), this.params, tClass);
     }
 
     public boolean toDel() {
@@ -180,16 +180,16 @@ public class Qe<T> extends LambdaQuery<T> {
         return 0 == list.size() ? new ArrayList<>() : list;
     }
 
-    public <T> T single(String sql, Map<String, Object> params, Class<T> tClass) {
+    public <T> T single(String sql, Map<String, Object> params, Class tClass) {
         checkProvider(sql2o);
-        T result = null;
+        Object result = null;
         try (Connection con = sql2o.open()) {
             Query q = con.createQuery(sql);
             setSql2oParam(q, params);
             result = q.executeAndFetchFirst(tClass);
         }
         clearMap(params);
-        return result;
+        return (T)result;
     }
 
     public int write(String sql, Map<String, Object> params) {

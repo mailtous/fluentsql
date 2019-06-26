@@ -18,6 +18,7 @@
     <modules>
         <module>fluentsql-example-act</module>
         <module>fluentsql-example-spring</module>
+        <module>spring-sql2o</module>
     </modules>
 
     <dependencies>

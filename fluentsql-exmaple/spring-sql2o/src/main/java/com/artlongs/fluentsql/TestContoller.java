@@ -2,14 +2,13 @@ package com.artlongs.fluentsql;
 
 import com.artlongs.fluentsql.core.Query;
 import com.artlongs.fluentsql.core.mock.User;
-import fluentsql.jdbc.Lq;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.sql2o.Sql2o;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -24,12 +23,12 @@ import java.util.Date;
 public class TestContoller {
 
     @Autowired
-    private NamedParameterJdbcTemplate jdbcTemplate;
+    private Sql2o sql2o;
 
     @GetMapping("/user/{id}")
     @ResponseBody
     public User getUserById(@PathVariable Integer id) {
-        Query lq = new Lq<User>(User.class, jdbcTemplate).andEq(User::getId,id);
+        Query lq = new Lq<User>(User.class, sql2o).andEq(User::getId,id);
         User user = lq.to();
         return user;
     }
@@ -43,7 +42,7 @@ public class TestContoller {
         user.setDeptId(1);
         user.setMoney(new BigDecimal(1000.22));
         user.setCreateTime(new Date());
-        new Lq<User>(User.class, jdbcTemplate).toSave(user);
+        new Lq<User>(User.class, sql2o).toSave(user);
 
         return user;
     }

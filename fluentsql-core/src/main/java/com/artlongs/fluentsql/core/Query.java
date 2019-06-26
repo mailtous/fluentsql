@@ -7,16 +7,16 @@ import java.util.List;
  *
  * @author: leeton on 2019/6/21.
  */
-public interface Query<T> {
-    T to();
+public interface Query {
+    <T> T to();
 
-    T to(Class<T> tClass);
+    <T> T to(Class<T> tClass);
 
     Long toCount();
 
-    List<T> toList();
+    <T> List<T> toList();
 
-    List toList(Class<T> tClass);
+    <T>List toList(Class<T> tClass);
 
     boolean toDel();
 
@@ -24,7 +24,7 @@ public interface Query<T> {
 
     int toSave(Object entity);
 
-    Page<T> toPage(Page<T> page);
+    <T> Page<T> toPage(Page<T> page);
 
-    Page<T> toPage(Class<T> clz, Page<T> page);
+    <T> Page<T> toPage(Class<T> clz, Page<T> page);
 }

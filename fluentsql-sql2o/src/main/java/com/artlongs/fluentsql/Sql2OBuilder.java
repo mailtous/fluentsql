@@ -1,5 +1,7 @@
 package com.artlongs.fluentsql;
 
+import com.artlongs.fluentsql.core.DbUrlParser;
+import com.zaxxer.hikari.HikariDataSource;
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
@@ -38,16 +40,28 @@ public class Sql2OBuilder {
         }
         return sql2o;
     }
+    public static Sql2o buildOfHikariCP(String url,String username,String pwd,String driverClassName,int maxPoolSize,int minIdle) {//使用外部的数据库连接池
+        if (null == sql2o) {
+            DataSource source = getHikariDataSource(url, username, pwd, driverClassName,maxPoolSize, minIdle);
+            sql2o = new Sql2o(source);
+        }
+        return sql2o;
+    }
 
-/*    private DataSource getDataSource(){ // 创建数据源
+    private static DataSource getHikariDataSource(String url,String username,String pwd,String driverClassName,int maxPoolSize,int minIdle){
         HikariDataSource datasource = new HikariDataSource();
-        datasource.setJdbcUrl(propertyResolver.getProperty("url"));
-        datasource.setDriverClassName(propertyResolver.getProperty("driver-class-name"));
-        datasource.setUsername(propertyResolver.getProperty("username"));
-        datasource.setPassword(propertyResolver.getProperty("password"));
-        datasource.setMaximumPoolSize(Integer.valueOf(propertyResolver.getProperty("hikari.maximum-pool-size")));
-        datasource.setMinimumIdle(Integer.valueOf(propertyResolver.getProperty("hikari.minimum-idle")));
-    }*/
+        datasource.setJdbcUrl(url);
+        if(null == driverClassName || "".equals(driverClassName)){
+            DbUrlParser dbUrlParser = DbUrlParser.parser(url);
+            driverClassName = dbUrlParser.getDriverClassName();
+        }
+        datasource.setDriverClassName(driverClassName);
+        datasource.setUsername(username);
+        datasource.setPassword(pwd);
+        datasource.setMaximumPoolSize(maxPoolSize);
+        datasource.setMinimumIdle(minIdle);
+        return datasource;
+    }
 
 
 }

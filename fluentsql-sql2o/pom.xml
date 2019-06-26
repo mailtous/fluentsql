@@ -25,12 +25,12 @@
             <artifactId>fluentsql-core</artifactId>
             <version>0.0.1-snapshot</version>
         </dependency>
-
-<!--        <dependency>
+        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>3.3.1</version>
-        </dependency>-->
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 
