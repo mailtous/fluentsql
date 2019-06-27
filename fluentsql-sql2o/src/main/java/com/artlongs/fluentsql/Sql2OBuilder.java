@@ -1,7 +1,6 @@
 package com.artlongs.fluentsql;
 
-import com.artlongs.fluentsql.core.DbUrlParser;
-import com.zaxxer.hikari.HikariDataSource;
+import com.artlongs.fluentsql.core.DbUitls;
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
@@ -42,25 +41,11 @@ public class Sql2OBuilder {
     }
     public static Sql2o buildOfHikariCP(String url,String username,String pwd,String driverClassName,int maxPoolSize,int minIdle) {//使用外部的数据库连接池
         if (null == sql2o) {
-            DataSource source = getHikariDataSource(url, username, pwd, driverClassName,maxPoolSize, minIdle);
+            DataSource source = DbUitls.getHikariDataSource(url, username, pwd, driverClassName,maxPoolSize, minIdle);
             sql2o = new Sql2o(source);
         }
         return sql2o;
     }
 
-    private static DataSource getHikariDataSource(String url,String username,String pwd,String driverClassName,int maxPoolSize,int minIdle){
-        HikariDataSource datasource = new HikariDataSource();
-        datasource.setJdbcUrl(url);
-        if(null == driverClassName || "".equals(driverClassName)){
-            DbUrlParser dbUrlParser = DbUrlParser.parser(url);
-            driverClassName = dbUrlParser.getDriverClassName();
-        }
-        datasource.setDriverClassName(driverClassName);
-        datasource.setUsername(username);
-        datasource.setPassword(pwd);
-        datasource.setMaximumPoolSize(maxPoolSize);
-        datasource.setMinimumIdle(minIdle);
-        return datasource;
-    }
 
 }

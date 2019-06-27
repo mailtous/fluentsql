@@ -1,6 +1,10 @@
 package com.artlongs.fluentsql.core;
 
-public class DbUrlParser {
+import com.zaxxer.hikari.HikariDataSource;
+
+import javax.sql.DataSource;
+
+public class DbUitls {
     private String protocol;
     private String dbType;
     private String provider;
@@ -9,11 +13,11 @@ public class DbUrlParser {
     private String dbName;
     private String driverClassName;
 
-    public DbUrlParser() {
+    public DbUitls() {
     }
 
-    public static DbUrlParser parser(String dburl) {
-        DbUrlParser urlInfo = new DbUrlParser();
+    public static DbUitls parser(String dburl) {
+        DbUitls urlInfo = new DbUitls();
         String url = dburl.toLowerCase();
         String[] urlbox = dburl.split(":");
         if(url.contains("oracle")) {
@@ -51,6 +55,21 @@ public class DbUrlParser {
             urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
         }
         return urlInfo;
+    }
+
+    public static DataSource getHikariDataSource(String url, String username, String pwd, String driverClassName, int maxPoolSize, int minIdle){
+        HikariDataSource datasource = new HikariDataSource();
+        datasource.setJdbcUrl(url);
+        if(null == driverClassName || "".equals(driverClassName)){
+            DbUitls dbUitls = DbUitls.parser(url);
+            driverClassName = dbUitls.getDriverClassName();
+        }
+        datasource.setDriverClassName(driverClassName);
+        datasource.setUsername(username);
+        datasource.setPassword(pwd);
+        datasource.setMaximumPoolSize(maxPoolSize);
+        datasource.setMinimumIdle(minIdle);
+        return datasource;
     }
 
     public enum DbType{
