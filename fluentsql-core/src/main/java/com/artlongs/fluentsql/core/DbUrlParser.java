@@ -34,6 +34,14 @@ public class DbUrlParser {
             urlInfo.port = urlbox[4];
             urlInfo.dbName = urlbox[5];
             urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
+        } else if(url.contains("h2") && url.contains("mem")){
+            //jdbc:h2:mem:test
+            urlInfo.protocol = urlbox[0];
+            urlInfo.dbType = urlbox[1];
+            urlInfo.ip = "";
+            urlInfo.port = "";
+            urlInfo.dbName = urlbox[3];
+            urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
         } else {
             urlInfo.protocol = urlbox[0];
             urlInfo.dbType = urlbox[1];
@@ -49,19 +57,19 @@ public class DbUrlParser {
         NOTFOUND("",""),
         MYSQL("mysql","com.mysql.jdbc.Driver"),
         PGSQL("postgresql","org.postgresql.Driver"),
-        H2("mysql","com.mysql.jdbc.Driver"),
+        H2("h2","org.h2.Driver"),
         ORACLE("oracle","oracle.jdbc.driver.OracleDriver"),
         MSSQL("sqlserver","com.microsoft.jdbc.sqlserver.SQLServerDriver"),
-        MOG("mong","com.mysql.jdbc.Driver"),
         DB2("mysql","com.ibm.db2.jdbc.app.DB2Driver"),
         ;
         public String type;
         public String className;
 
-        DbType(String className, String type) {
-            this.className = className;
+        DbType(String type, String className) {
             this.type = type;
+            this.className = className;
         }
+
         public static DbType itemOf(String type) {
             for (DbType item : DbType.values()) {
                 if(item.type.equalsIgnoreCase(type)) return item;
