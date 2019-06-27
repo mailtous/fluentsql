@@ -158,9 +158,7 @@ public class Qe<T> extends LambdaQuery<T> {
             boolean offsetStartZero = false;
             long offset = (pageNumber - 1) * pageSize + (offsetStartZero ? 0 : 1);
             String pageSql = getMysqlLimit(this.buildSymbolsql(), offset, pageSize);
-            Map<String, Object> jdbdParams = toJdbcParams(params);
             list = getList(pageSql, params,clazz);
-            clearMap(jdbdParams);
         }
         page.setTotal(count);
         page.setItems(list);
@@ -221,9 +219,11 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     private void setSql2oParam(Query query, Map<String,Object> parms) {
-        for (String k : parms.keySet()) {
-            String key = k.replace(":", "");
-            query.addParameter(key, parms.get(k));
+        if (null != parms && parms.size() > 0) {
+            for (String k : parms.keySet()) {
+                String key = k.replace(":", "");
+                query.addParameter(key, parms.get(k));
+            }
         }
     }
 

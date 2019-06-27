@@ -1,5 +1,6 @@
 package com.artlongs.fluentsql;
 
+import com.artlongs.fluentsql.core.Page;
 import com.artlongs.fluentsql.core.Query;
 import com.artlongs.fluentsql.core.mock.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,16 @@ public class TestContoller {
     @GetMapping("/user")
     @ResponseBody
     public List<User> getUserList() {
-       List<User> userList = new Lq(User.class, sql2o).toList();
+        List<User> userList = new Lq(User.class, sql2o).toList();
         return userList;
+    }
+
+    @GetMapping("/user/page")
+    @ResponseBody
+    public Page<User> getUserPage(Page<User> page) {
+        page.setPageSize(2);
+        new Lq<User>(User.class, sql2o).andGt(User::getId,1).toPage(page);
+        return page;
     }
 
     @GetMapping("/adduser/{id}")
