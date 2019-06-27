@@ -39,6 +39,7 @@ public class SpringSql2oStart {
         int maxPoolSize = getInt(environment.getProperty(proPfix + "hikari.maximum-pool-size"),10);
         int minIdle = getInt(environment.getProperty(proPfix + "hikari.minimum-idle"), 5);
         Sql2o sql2o = Sql2OBuilder.buildOfHikariCP(url,username,password,dcn,maxPoolSize,minIdle);
+//        Sql2o sql2o = Sql2OBuilder.build(url,username,password);
         return sql2o;
     }
 

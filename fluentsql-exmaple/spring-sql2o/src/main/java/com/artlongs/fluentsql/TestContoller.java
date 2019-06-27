@@ -12,6 +12,7 @@ import org.sql2o.Sql2o;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Func :
@@ -31,6 +32,13 @@ public class TestContoller {
         Query lq = new Lq<User>(User.class, sql2o).andEq(User::getId,id);
         User user = lq.to();
         return user;
+    }
+
+    @GetMapping("/user")
+    @ResponseBody
+    public List<User> getUserList() {
+       List<User> userList = new Lq(User.class, sql2o).toList();
+        return userList;
     }
 
     @GetMapping("/adduser/{id}")

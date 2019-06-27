@@ -10,9 +10,12 @@ import java.util.Date;
  */
 public class User {
     private Integer id;
-    private String userName;
-    private BigDecimal money;
     private Integer deptId;
+    private String userName;
+    private Integer age;
+    private BigDecimal money;
+    private Integer role;
+    private String phone;
     private Date createTime;
 
     public Integer getId() {
@@ -23,12 +26,28 @@ public class User {
         this.id = id;
     }
 
+    public Integer getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
+    }
+
     public String getUserName() {
         return userName;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public BigDecimal getMoney() {
@@ -39,12 +58,20 @@ public class User {
         this.money = money;
     }
 
-    public Integer getDeptId() {
-        return deptId;
+    public Integer getRole() {
+        return role;
     }
 
-    public void setDeptId(Integer deptId) {
-        this.deptId = deptId;
+    public void setRole(Integer role) {
+        this.role = role;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public Date getCreateTime() {

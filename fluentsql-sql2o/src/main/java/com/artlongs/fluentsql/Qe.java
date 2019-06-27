@@ -77,7 +77,7 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     public T to(Class tClass) {
-        T obj = single(buildSymbolsql(), params, tClass);
+        T obj = single(build(), params, tClass);
         return obj;
     }
 
@@ -174,6 +174,7 @@ public class Qe<T> extends LambdaQuery<T> {
         try (Connection con = sql2o.open()) {
             Query q = con.createQuery(sql);
             setSql2oParam(q, params);
+            q.setAutoDeriveColumnNames(true);
             list = q.executeAndFetch(tClass);
         }
         clearMap(params);
@@ -186,6 +187,7 @@ public class Qe<T> extends LambdaQuery<T> {
         try (Connection con = sql2o.open()) {
             Query q = con.createQuery(sql);
             setSql2oParam(q, params);
+            q.setAutoDeriveColumnNames(true);
             result = q.executeAndFetchFirst(tClass);
         }
         clearMap(params);
@@ -199,6 +201,7 @@ public class Qe<T> extends LambdaQuery<T> {
             con = sql2o.beginTransaction();
             Query q = con.createQuery(sql);
             setSql2oParam(q, params);
+            q.setAutoDeriveColumnNames(true);
             q.executeUpdate();
             con.commit();
         } catch (Exception ex) {
@@ -219,7 +222,8 @@ public class Qe<T> extends LambdaQuery<T> {
 
     private void setSql2oParam(Query query, Map<String,Object> parms) {
         for (String k : parms.keySet()) {
-            query.addParameter(k.replace(":", ""), parms.get(k));
+            String key = k.replace(":", "");
+            query.addParameter(key, parms.get(k));
         }
     }
 
