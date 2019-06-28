@@ -1,6 +1,13 @@
 # fluent-sql
 Lambda 风格的流式 SQL 查询工具,支持多表 lefjoin,from(子表),sum case , iif ,group by(子表属性)...
-集成了JDBCTEMPLATE实现CRUD,分页查询等. 自我感觉良好,有了这个小工具,可以忘却 Hibernate,Mybatis...
+集成了SQL2O,JDBCTEMPLATE实现CRUD,分页查询等. 自我感觉良好,有了这个小工具,可以忘却 Hibernate,Mybatis...
+
+# 开发思历
+世面上有的 ORM 我基本上都用过,用得最多的是 Hibernate,Mybatis. 
+日子久了我就在想有没有一种 ORM 既易用而又高性能的呢?鱼与掌真的不能兼得吗? 要说高性能,原生SQL肯定是性能最高,可是原生SQL却有硬代码,并且因为前端的查询条件的可选性,自己手动拼接查询条件时,必然会有许许多多的 IF(null!=xx){sql}... , 这个缺点 Hibernate,Mybatis 一样也会有.
+这催发了我 开发出 fluent-sql 这个项目, 这只是一个工具类,绝对会让你大叫: SHUANG! SHUANG! SHUANG!
+fluent-sql + sql2o ,就是性能与易用的经典示范!
+SQL2O: https://github.com/aaberg/sql2o
 
 # 约定: 
 1. 数据库字段默认风格是全小写加下划线分隔的 underline 风格
