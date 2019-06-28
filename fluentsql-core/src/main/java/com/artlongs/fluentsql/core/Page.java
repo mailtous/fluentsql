@@ -25,6 +25,7 @@ public class Page<T> implements Serializable {
 
     //======
     public Page() {
+        this.pageSize = DEFAULT_PAGE_SIZE;
     }
 
     public Page(int pageSize) {
@@ -134,9 +135,8 @@ public class Page<T> implements Serializable {
      * 根据pageSize与total计算总页数, 默认值为0.
      */
     public long getTotalPages() {
-        if (total < 0) {
-            return 0;
-        }
+        if (total < 0 ) return 0;
+        pageSize = (0 == pageSize) ? DEFAULT_PAGE_SIZE : pageSize;
 
         long count = total / pageSize;
         if (total % pageSize > 0) {

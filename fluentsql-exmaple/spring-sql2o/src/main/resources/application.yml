@@ -1,5 +1,0 @@
-spring:
-  profiles:
-#    active: ${profile.active}
-    active: dev
-

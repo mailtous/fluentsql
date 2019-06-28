@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>fluentsql-exmaple</artifactId>
+        <groupId>com.artlongs.fluentsql</groupId>
+        <version>0.0.1-snapshot</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>example-act</name>
+    <artifactId>example-act</artifactId>
+    <url>http://www.github.com/mailtous/fluentsql</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.actframework</groupId>
+            <artifactId>act-starter-parent</artifactId>
+            <version>1.8.24.0</version>
+        </dependency>
+
+        <!-- fluentsql + h2  BEGIN -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.178</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <!-- 如果使用 mysql ,则加上 mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.41</version>
+        </dependency>
+        <!-- jdbc 按需加入 -->
+        <dependency>
+            <groupId>com.artlongs.fluentsql</groupId>
+            <artifactId>fluentsql-jdbctemplate</artifactId>
+            <version>0.0.1-snapshot</version>
+        </dependency>
+        <!-- sql2o 按需加 -->
+        <dependency>
+            <groupId>com.artlongs.fluentsql</groupId>
+            <artifactId>fluentsql-sql2o</artifactId>
+            <version>0.0.1-snapshot</version>
+        </dependency>
+        <!-- fluentsql + h2  END -->
+    </dependencies>
+
+</project>
