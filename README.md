@@ -1,4 +1,6 @@
 # fluent-sql
+我们不创建SQL,我们只是SQL的搬运工!
+
 Lambda 风格的流式 SQL 查询工具,支持多表 lefjoin,from(子表),sum case , iif ,group by(子表属性)...
 集成了SQL2O,JDBCTEMPLATE实现CRUD,分页查询等. 自我感觉良好,有了这个小工具,可以忘却 Hibernate,Mybatis...
 
