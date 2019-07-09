@@ -1,8 +1,13 @@
-# fluent-sql [![](https://jitpack.io/v/mailtous/fluentsql.svg)](https://jitpack.io/#mailtous/fluentsql)
+# Fluent-SQL [![](https://jitpack.io/v/mailtous/fluentsql.svg)](https://jitpack.io/#mailtous/fluentsql)
 我们不生产SQL,我们只是SQL的搬运工!
 
 Lambda 风格的流式 SQL 查询工具,支持多表 lefjoin,from(子表),sum case , iif ,group by(子表属性)...
 集成了SQL2O,JDBCTEMPLATE实现CRUD,分页查询等. 自我感觉良好,有了这个小工具,可以忘却 Hibernate,Mybatis...
+Fluent-SQL 优势所在:
+1. 无须编写实体类,您只需创建简单的 POJO 一一对应数据表字段,即可.
+2. 您无须关心各种多对多,一对多等各种 ORM 关联配置,您懂得使用 Left-Join 即可以关联任意数据表.
+3. Fluent-SQL 自带了防 SQL 注入.
+4. 在不考虑缓存的情况下,有那一种 ORM 方案会比原生 SQL 快呢? 请告诉我让我学习进步一下,可好?
 
 # 开发思历
 世面上有的 ORM 我基本上都用过,用得最多的是 Hibernate,Mybatis. 
