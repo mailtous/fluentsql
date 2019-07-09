@@ -3,6 +3,7 @@
 
 Lambda 风格的流式 SQL 查询工具,支持多表 lefjoin,from(子表),sum case , iif ,group by(子表属性)...
 集成了SQL2O,JDBCTEMPLATE实现CRUD,分页查询等. 自我感觉良好,有了这个小工具,可以忘却 Hibernate,Mybatis...
+
 Fluent-SQL 优势所在:
 1. 无须编写实体类,您只需创建简单的 POJO 一一对应数据表字段,即可.
 2. 您无须关心各种多对多,一对多等各种 ORM 关联配置,您懂得使用 Left-Join 即可以关联任意数据表.
