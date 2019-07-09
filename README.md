@@ -41,3 +41,19 @@ String sql = new Lq<>(User.class)
                 .having(User::getDeptId, Qe.Opt.GT, 0)
                 .build();
 ```
+# MAVEN 
+1 . 在您的 POM 文件增加新的仓库 jitpack.io
+2 . 增加对本项目的依赖,您可以只选择对子项目的依赖 fluentsql-sql2o | fluentsql-jdbctemplate
+```xml
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	<dependency>
+	    <groupId>com.github.mailtous</groupId>
+	    <artifactId>fluentsql</artifactId>
+	    <version>0.0.1-snapshot</version>
+	</dependency>
+```
