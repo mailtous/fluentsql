@@ -1,4 +1,4 @@
-# fluent-sql
+# fluent-sql [![](https://jitpack.io/v/mailtous/fluentsql.svg)](https://jitpack.io/#mailtous/fluentsql)
 我们不生产SQL,我们只是SQL的搬运工!
 
 Lambda 风格的流式 SQL 查询工具,支持多表 lefjoin,from(子表),sum case , iif ,group by(子表属性)...
@@ -42,8 +42,8 @@ String sql = new Lq<>(User.class)
                 .build();
 ```
 # MAVEN 
-1 . 在您的 POM 文件增加新的仓库 jitpack.io
-2 . 增加对本项目的依赖,您可以只选择对子项目的依赖 fluentsql-sql2o | fluentsql-jdbctemplate
+1. 在您的 POM 文件增加新的仓库 jitpack.io
+2. 增加对本项目的依赖,您可以只选择对子项目的依赖 fluentsql-sql2o | fluentsql-jdbctemplate
 ```xml
 	<repositories>
 		<repository>
