@@ -103,7 +103,6 @@ public class Qe<T> extends LambdaQuery<T> {
         checkProvider(sql2o);
         String symbolSql = update(entity).buildSymbolsql();
         int rows = write(symbolSql, params);
-        clear();
         return rows;
     }
 
@@ -121,7 +120,6 @@ public class Qe<T> extends LambdaQuery<T> {
         checkProvider(sql2o);
         String symbolSql = save(entity).buildSymbolsql();
         int rows = write(symbolSql, params);
-        clear();
         return rows;
     }
 
@@ -149,10 +147,8 @@ public class Qe<T> extends LambdaQuery<T> {
         }
         String countSql = this.count();
         Long count = single(countSql, new HashMap<>(), Long.class);
-        List<T> list = null;
-        if (count == 0) {
-            list = Collections.emptyList();
-        } else {
+        List<T> list = new ArrayList<>();
+        if (count > 0) {
             long pageNumber = page.getPageNumber();
             long pageSize = page.getPageSize();
             boolean offsetStartZero = false;
@@ -162,7 +158,6 @@ public class Qe<T> extends LambdaQuery<T> {
         }
         page.setTotal(count);
         page.setItems(list);
-        clearMap(params);
         return page;
     }
 
@@ -175,7 +170,8 @@ public class Qe<T> extends LambdaQuery<T> {
             q.setAutoDeriveColumnNames(true);
             list = q.executeAndFetch(tClass);
         }
-        clearMap(params);
+        // 手动清理内存是种好习惯 :)
+        clear();
         return 0 == list.size() ? new ArrayList<>() : list;
     }
 
@@ -188,7 +184,8 @@ public class Qe<T> extends LambdaQuery<T> {
             q.setAutoDeriveColumnNames(true);
             result = q.executeAndFetchFirst(tClass);
         }
-        clearMap(params);
+        // 手动清理内存是种好习惯 :)
+        clear();
         return (T)result;
     }
 
@@ -205,13 +202,9 @@ public class Qe<T> extends LambdaQuery<T> {
         } catch (Exception ex) {
             throw new Sql2oException("写入数据库出错:"+ex);
         }
-        clearMap(params);
+        // 手动清理内存是种好习惯 :)
+        clear();
         return con.getResult();
-    }
-
-    public <T> T getObj(String sql, Map<String, Object> params, Class tClass) {
-        List<T> list = getList(sql, params, tClass);
-        return list.size() == 0 ? null : list.get(0);
     }
 
     private void checkProvider(Sql2o sql2o) {

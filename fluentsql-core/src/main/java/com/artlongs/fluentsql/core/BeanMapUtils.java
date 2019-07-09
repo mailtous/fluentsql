@@ -1,9 +1,13 @@
 package com.artlongs.fluentsql.core;
 
+
+import org.joda.time.DateTime;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -41,8 +45,8 @@ public class BeanMapUtils {
     }
 
     private static void toPojo(Object source, Object target, String[] ignList) {
-        Set<Field> trageFieldList = getFields(target.getClass(), new HashSet<>());
-        Set<Field> sourceFieldList = getFields(source.getClass(), new HashSet<>());
+        Set<Field> trageFieldList = getFields(target.getClass());
+        Set<Field> sourceFieldList = getFields(source.getClass());
         if (sourceFieldList.isEmpty() || trageFieldList.isEmpty()) {
             throw new RuntimeException("trageFieldList OR sourceFieldList is EMPTY !");
         }
@@ -52,14 +56,16 @@ public class BeanMapUtils {
                 Object value = getFieldValue(source, sField);
                 if (null != value) {
                     Field field = getFieldByName(trageFieldList, sField.getName());
-                    setFieldValue(target, field, value);
+                    if (null != field) {
+                        setFieldValue(target, field, value);
+                    }
                 }
             }
         }
     }
 
     private static void toMap(Object source, Map<String, Object> targetMap, String... ignList) {
-        Set<Field> sourceFieldList = getFields(source.getClass(), new HashSet<>());
+        Set<Field> sourceFieldList = getFields(source.getClass());
         if (sourceFieldList.isEmpty()) {
             throw new RuntimeException("trageFieldList is EMPTY !");
         }
@@ -75,7 +81,7 @@ public class BeanMapUtils {
     }
 
     private static void fromMap(Map<String, Object> sourceMap, Object target, String... ignList) {
-        Set<Field> targetFields = getFields(target.getClass(), new HashSet<>());
+        Set<Field> targetFields = getFields(target.getClass());
         if (targetFields.isEmpty()) {
             throw new RuntimeException("trageFieldList is EMPTY !");
         }
@@ -83,7 +89,9 @@ public class BeanMapUtils {
             if (isFilterAttr(Arrays.asList(ignList), key)) continue;
             Object val = sourceMap.get(key);
             Field field = getFieldByName(targetFields, key);
-            setFieldValue(target, field, val);
+            if (null != field) {
+                setFieldValue(target, field, val);
+            }
         }
     }
 
@@ -95,7 +103,7 @@ public class BeanMapUtils {
     }
 
 
-    private static Field getFieldByName(Set<Field> fields, String name) {
+    public static Field getFieldByName(Set<Field> fields, String name) {
         for (Field field : fields) {
             if (field.getName().equals(name)) {
                 return field;
@@ -114,7 +122,8 @@ public class BeanMapUtils {
         return name;
     }
 
-    public static Set<Field> getFields(Class clz, Set<Field> fieldList) {
+    public static Set<Field> getFields(Class clz) {
+        Set<Field> fieldList = new HashSet<>();
         getFieldsIter(clz, fieldList);
         return fieldList;
     }
@@ -192,14 +201,14 @@ public class BeanMapUtils {
     /**
      * 对属性设值
      *
-     * @param targetClz  目标类
+     * @param targetInst  目标类实例,不是 xx.class
      * @param field
      * @param fieldValue
      */
-    public static void setFieldValue(Object targetClz, Field field, Object fieldValue) {
+    public static void setFieldValue(Object targetInst, Field field, Object fieldValue) {
         try {
             field.setAccessible(true);
-            field.set(targetClz, fieldValue);
+            field.set(targetInst, getValOfBaseType(field.getType(),fieldValue));
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -220,6 +229,29 @@ public class BeanMapUtils {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Object getValOfBaseType(Class<?> c, Object val) {
+        String v = "" + val;
+        if (c == int.class || c == Integer.class)
+            return Integer.parseInt(v);
+        else if (c == long.class || c == Long.class)
+            return Long.parseLong(v);
+        else if (c == float.class || c == Float.class)
+            return Float.parseFloat(v);
+        else if (c == double.class || c == Double.class) {
+            return Double.parseDouble(v);
+        }
+        else if (c == Date.class) {
+            return DateTime.parse(v).toDate();
+        }
+        else if (c == DateTime.class) {
+            return DateTime.parse(v);
+        }
+        else if (c == BigDecimal.class) {
+            return BigDecimal.valueOf(Double.valueOf(v));
+        }
+        return v;
     }
 
 
@@ -248,9 +280,9 @@ public class BeanMapUtils {
             @Override
             public String toString() {
                 return "Foo{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    '}';
+                        "id=" + id +
+                        ", name='" + name + '\'' +
+                        '}';
             }
         }
         Foo foo = new Foo();

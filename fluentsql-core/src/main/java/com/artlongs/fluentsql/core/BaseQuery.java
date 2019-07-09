@@ -755,7 +755,6 @@ public abstract class BaseQuery<T> implements Query{
     private boolean isSQLHack(String v) {
         if (checkSqlHack) {
             return SQL_PATTERN.matcher(v).find();
-//            return false;
         }
         return false;
     }

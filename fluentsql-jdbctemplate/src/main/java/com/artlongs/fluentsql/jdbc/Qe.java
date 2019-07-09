@@ -151,38 +151,36 @@ public class Qe<T> extends LambdaQuery<T> {
             throw new RuntimeException("分页参数不要通过[limit]传入.");
         }
         String countSql = this.count();
-        List<Long> countList = jdbcTemplate.queryForList(countSql, new HashMap<>(), Long.class);
-        Long count = countList.get(0);
-        List<T> list = null;
-        if (count == 0) {
-            list = Collections.emptyList();
-        } else {
+        Long count = single(countSql, new HashMap<>(), Long.class);
+        List<T> list = Collections.emptyList();
+        if (count > 0) {
             long pageNumber = page.getPageNumber();
             long pageSize = page.getPageSize();
             boolean offsetStartZero = false;
             long offset = (pageNumber - 1) * pageSize + (offsetStartZero ? 0 : 1);
             String pageSql = getMysqlLimit(this.buildSymbolsql(), offset, pageSize);
             Map<String, Object> jdbdParams = toJdbcParams(params);
-            list = jdbcTemplate.query(pageSql, jdbdParams, new BeanPropertyRowMapper<>(clazz));
+            list = getList(pageSql, jdbdParams,clazz);
             clearMap(jdbdParams);
         }
         page.setTotal(count);
         page.setItems(list);
-        clearMap(params);
         return page;
     }
 
     public List getList(String sql, Map<String, Object> params, Class<T> tClass) {
         checkProvider(jdbcTemplate);
         List<T> list = jdbcTemplate.query(sql, params, new BeanPropertyRowMapper<>(tClass));
-        clearMap(params);
+        // 手动清理内存是种好习惯 :)
+        clear();
         return 0 == list.size() ? new ArrayList<>() : list;
     }
 
     public <T> T single(String sql, Map<String, Object> params, Class tClass) {
         checkProvider(jdbcTemplate);
         List<T> list = jdbcTemplate.query(sql, params, new SingleColumnRowMapper<>(tClass));
-        clearMap(params);
+        // 手动清理内存是种好习惯 :)
+        clear();
         return list.size() == 0 ? null : list.get(0);
     }
 
