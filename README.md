@@ -11,13 +11,14 @@ Fluent-SQL 优势所在:
 4. 在不考虑缓存的情况下,有那一种 ORM 方案会比原生 SQL 快呢? 请告诉我让我学习进步一下,可好?
 
 # 开发思历
-世面上有的 ORM 我基本上都用过,用得最多的是 Hibernate,Mybatis. 
-日子久了我就在想有没有一种 ORM 既易用而又高性能的呢?鱼与掌真的不能兼得吗? 要说高性能,原生SQL肯定是性能最高,可是原生SQL却有硬代码,并且因为前端的查询条件的可选性,自己手动拼接查询条件时,必然会有许许多多的 IF(null!=xx){sql}... , 这个缺点 Hibernate,Mybatis 一样也会有.
-这催发了我 开发出 fluent-sql 这个项目, 这只是一个工具类,绝对会让你大叫: SHUANG! SHUANG! SHUANG!
+世面上有的 ORM 我多数都用过,用得最多的是 Hibernate,Mybatis. 
+日子久了我就在想有没有一种 ORM 既易用而又高性能的呢?鱼与掌真的不能兼得吗? 
+要说高性能,原生SQL肯定是性能最高,可是原生SQL却有硬代码,并且因为前端的查询条件的可选性,自己手动拼接查询条件时,必然会有许许多多的 IF(null!=xx){sql}... , 这个缺点 Hibernate,Mybatis 一样也会有.
+这催发了我 开发出 fluent-sql 这个项目, 这只是一个工具类, 却绝对会让你大叫: SHUANG! SHUANG! SHUANG!
 
 fluent-sql + sql2o ,就是性能与易用的经典示范!
 
-SQL2O: https://github.com/aaberg/sql2o
+SQL2O 项目地址 : https://github.com/aaberg/sql2o
 
 # 约定: 
 1. 数据库字段默认风格是全小写加下划线分隔的 underline 风格
@@ -30,21 +31,22 @@ SQL2O: https://github.com/aaberg/sql2o
 ```sql
 SELECT user.user_name AS userName,dept.dept_name AS deptName FROM `user` AS user  
 LEFT JOIN `dept` ON user.dept_id = dept.id 
-WHERE ((LOCATE (user.user_name,'jack')>0) ) 
+WHERE (LOCATE (user.user_name,'jack')>0)
 GROUP BY user.dept_id HAVING (user.dept_id>0) 
 ORDER BY user.dept_id ASC,user.user_name DESC
 
 ```
+等同与:
 ```java
 String sql = new Lq<>(User.class)
                 .select(User::getUserName)
                 .select(new Attr<>(Dept::getDeptName))
                 .leftJoin(Dept.class)
                 .andLike(User::getUserName, "jack")
-                .asc(User::getDeptId)
-                .desc(User::getUserName)
                 .group(User::getDeptId)
                 .having(User::getDeptId, Qe.Opt.GT, 0)
+                .asc(User::getDeptId)
+                .desc(User::getUserName)
                 .build();
 ```
 # MAVEN 

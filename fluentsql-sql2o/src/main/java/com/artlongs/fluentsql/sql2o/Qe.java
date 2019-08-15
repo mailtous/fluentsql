@@ -260,8 +260,29 @@ public class Qe<T> extends LambdaQuery<T> {
         String count = new Qe(SysUser.class).andEq("dept_id", 1).count();
         System.out.println("count= " + count);*/
 
+       String joinSelf = new Qe(User.class)
+               .select("id")
+               .selectAs("t2", "user_name", "")
+               .joinSelf("t2", "pid")
+               .build();
 
-    }
+       System.out.println("sql=" + joinSelf);
+
+       // 找出购买价格比小明高的用户及价格
+       String joinSelf2 = new Qe(User.class)
+               .select("price")
+               .select("user_name")
+               .fromAs("t1")
+               .fromAs("t2")
+               .andEq("t2.user_name", "小明")
+               .andLt("t2.price", "t1.price")
+               .build();
+
+       System.out.println("sql=" + joinSelf2);
+
+
+
+   }
 
 
 

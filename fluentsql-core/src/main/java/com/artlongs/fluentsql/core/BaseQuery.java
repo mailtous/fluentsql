@@ -20,17 +20,17 @@ public abstract class BaseQuery<T> implements Query{
     protected Class<T> clz;
     protected String mainTableName = "";
     protected String template = "{insert}{update}{del}{select}{sum}{casethen}{sumcasethen}{count}{from}{join}{where}{subselect}{group}{having}{order}{limit}";
-    protected StringBuffer del = new StringBuffer(32);
-    protected StringBuffer count = new StringBuffer(32);
-    protected StringBuffer sum = new StringBuffer(32);
-    protected StringBuffer casethen = new StringBuffer(32);
+    protected StringBuffer del = new StringBuffer(128);
+    protected StringBuffer count = new StringBuffer(128);
+    protected StringBuffer sum = new StringBuffer(128);
+    protected StringBuffer casethen = new StringBuffer(128);
     protected StringBuffer sumcasethen = new StringBuffer(128);
-    protected StringBuffer select = new StringBuffer(32);
+    protected StringBuffer select = new StringBuffer(128);
     protected StringBuffer subselect = new StringBuffer(128);
-    protected StringBuffer from = new StringBuffer(32);
+    protected StringBuffer from = new StringBuffer(64);
     protected StringBuffer join = new StringBuffer(196);
     protected StringBuffer where = new StringBuffer(196);
-    protected StringBuffer group = new StringBuffer(32);
+    protected StringBuffer group = new StringBuffer(128);
     protected StringBuffer having = new StringBuffer(64);
     protected StringBuffer order = new StringBuffer(32);
     protected StringBuffer limit = new StringBuffer(32);
@@ -39,8 +39,8 @@ public abstract class BaseQuery<T> implements Query{
     protected String symbolsql = "";  // 还没有设值的 sql
     protected Map<String, Object> params = new HashMap<>(7);
     protected boolean checkSqlHack = true;
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private String link;
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"); //时间日期统一用这种格式
+    private String link; // 连接符 AND/OR
 
     public BaseQuery() {
     }
@@ -150,6 +150,18 @@ public abstract class BaseQuery<T> implements Query{
         return this;
     }
 
+    public BaseQuery<T> fromAs(String as) {
+        if(0 == this.from.length()){
+            this.from.append(FROM.symbol);
+            this.from.append("`").append(this.mainTableName).append("`");
+        }else {
+            this.from.append(" ,");
+            this.from.append(" `").append(this.mainTableName).append("`");
+        }
+        this.from.append(AS.symbol).append(as);
+        return this;
+    }
+
     public BaseQuery<T> sum(String column, Class... otherClz) {
         return sumAs(column, column, getTablePrev(otherClz));
     }
@@ -248,6 +260,30 @@ public abstract class BaseQuery<T> implements Query{
 
     public BaseQuery<T> leftJoin(Class<T> clz, String mainTableKey) {
         return leftJoin(getTableName(clz), "id", mainTableKey);
+    }
+
+    /**
+     * 生成自关联语句,与 fromAs 一起使用才行,即主表的别名由 fromAs 指定.
+     * 不推荐使用,因为双变成使用了硬代码.
+     * @param alias   关联表的别名
+     * @param joinKey 关联的字段
+     * @return
+     */
+    public BaseQuery<T> joinSelf(String alias,String joinKey) {
+        this.join.append(LEFTJOIN.symbol)
+                .append("`")
+                .append(this.mainTableName)
+                .append("` ")
+                .append(alias)
+                .append(ON.symbol)
+                .append(this.mainTableName)
+                .append(".")
+                .append("id")
+                .append(" = ")
+                .append(alias)
+                .append(".")
+                .append(joinKey);
+        return this;
     }
 
 
@@ -558,14 +594,15 @@ public abstract class BaseQuery<T> implements Query{
             this.where.append(link);
         }
         StringBuffer key = new StringBuffer().append(":").append(link.toLowerCase()).append(opt.name().toLowerCase()).append("_").append(k);
-        String table = getTablePrev(otherClz);
-        this.where.append("(")
-                .append(table)
-                .append(".")
-                .append(k)
-                .append(opt.symbol)
-                .append(key)
-                .append(") ");
+        //
+        this.where.append("(");
+        if (k.indexOf(".") != -1) {// 手动指定了表名,eg: t1.age = 18
+            this.where.append(k);
+        }else {
+            String table = getTablePrev(otherClz);
+            this.where.append(table).append(".").append(k);
+        }
+        this.where.append(opt.symbol).append(key).append(") ");
         //
         val = buildSubSelect(val);
         //
@@ -747,14 +784,14 @@ public abstract class BaseQuery<T> implements Query{
         return !((""+v).toUpperCase().startsWith("(SELECT"));
     }
 
-    private static final String reg = "/(\\\\%27)|(/\\*(?:.|[\\n\\r])*?\\*/)|(\\b(select|union|update|and|or|delete|insert|trancate|" +
+    private static final String hack_str = "/(\\\\%27)|(/\\*(?:.|[\\n\\r])*?\\*/)|(\\b(select|union|update|and|or|delete|insert|trancate|" +
             "into|substr|ascii|declare|exec|execute|count|master|into|drop|information_schema.columns|table_schema)\\b)";
 
-    private static final Pattern SQL_PATTERN = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
+    private static final Pattern SQL_HACK_PATTERN = Pattern.compile(hack_str, Pattern.CASE_INSENSITIVE);
 
     private boolean isSQLHack(String v) {
         if (checkSqlHack) {
-            return SQL_PATTERN.matcher(v).find();
+            return SQL_HACK_PATTERN.matcher(v).find();
         }
         return false;
     }
@@ -831,15 +868,22 @@ public abstract class BaseQuery<T> implements Query{
 
     private String settingParams(String symbolsql, Map<String, Object> params) {
         for (String key : params.keySet()) {
-            String v = changeValOfType(params.get(key));
-            Assert.isTrue(isSQLHack(v),"Warn find SQL HACK :" + v);
+            String v = ""+params.get(key);
+            if (!isFieldVal(key,params.get(key))) {// key/val 都没有带别名,才转换了.
+                v = changeValOfType(params.get(key));
+            }
+            Assert.isTrue(isSQLHack(v), "WARN FIND SQL HACK :" + v);
             symbolsql = symbolsql.replace(key, v);
         }
         return symbolsql;
     }
 
+    private boolean isFieldVal(String key, Object v) {
+        return (key.indexOf(".") != -1 && v instanceof String && v.toString().indexOf(".") != -1);
+    }
+
     private StringBuffer buildFrom() {
-        if (this.from.length() == 0) {
+        if (0 == this.from.length()) {
             this.from.append(FROM.symbol);
             if (null != mainTableName && !"".equals(mainTableName)) {
                 this.from.append("`").append(mainTableName).append("`").append(" AS ").append(mainTableName).append(" ");

@@ -11,7 +11,7 @@
 
     <name>fluentsql-core</name>
     <artifactId>fluentsql-core</artifactId>
-    <version>0.0.1-snapshot</version>
+    <version>0.0.2-snapshot</version>
 
 
     <dependencies>
