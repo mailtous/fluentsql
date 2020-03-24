@@ -3,9 +3,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>fluentsql-exmaple</artifactId>
         <groupId>com.artlongs.fluentsql</groupId>
-        <version>0.0.1-snapshot</version>
+        <artifactId>fluentsql-exmaple</artifactId>
+        <version>0.0.2-snapshot</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -49,12 +49,12 @@
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-jdbctemplate</artifactId>
-            <version>0.0.1-snapshot</version>
+            <version>0.0.2-snapshot</version>
         </dependency>
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-sql2o</artifactId>
-            <version>0.0.1-snapshot</version>
+            <version>0.0.2-snapshot</version>
         </dependency>
         <!-- fluentsql + h2  END -->
     </dependencies>
