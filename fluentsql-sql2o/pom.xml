@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-core</artifactId>
-            <version>0.0.2-snapshot</version>
+            <version>0.0.1-snapshot</version>
         </dependency>
 <!--        <dependency>
             <groupId>org.simpleflatmapper</groupId>
