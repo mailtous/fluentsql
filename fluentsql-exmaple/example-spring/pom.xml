@@ -5,12 +5,13 @@
     <parent>
         <groupId>com.artlongs.fluentsql</groupId>
         <artifactId>fluentsql-exmaple</artifactId>
-        <version>0.0.2-snapshot</version>
+        <version>0.0.3-snapshot</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>example-spring</name>
     <artifactId>example-spring</artifactId>
+    <version>0.0.3-snapshot</version>
 
     <dependencies>
         <dependency>
@@ -49,12 +50,12 @@
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-jdbctemplate</artifactId>
-            <version>0.0.2-snapshot</version>
+            <version>0.0.3-snapshot</version>
         </dependency>
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-sql2o</artifactId>
-            <version>0.0.2-snapshot</version>
+            <version>0.0.3-snapshot</version>
         </dependency>
         <!-- fluentsql + h2  END -->
     </dependencies>

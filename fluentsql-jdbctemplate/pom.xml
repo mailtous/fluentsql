@@ -7,18 +7,13 @@
   <parent>
     <groupId>com.artlongs.fluentsql</groupId>
     <artifactId>fluentsql</artifactId>
-    <version>0.0.2-snapshot</version>
+    <version>0.0.3-snapshot</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <name>fluentsql-jdbctemplate</name>
   <artifactId>fluentsql-jdbctemplate</artifactId>
-  <version>0.0.2-snapshot</version>
-
-  <url>https://github.com/mailtous/flowsql</url>
-
-  <properties>
-  </properties>
+  <version>0.0.3-snapshot</version>
 
   <dependencies>
     <dependency>
@@ -29,7 +24,7 @@
     <dependency>
       <groupId>com.artlongs.fluentsql</groupId>
       <artifactId>fluentsql-core</artifactId>
-      <version>0.0.2-snapshot</version>
+      <version>0.0.3-snapshot</version>
     </dependency>
   </dependencies>
 

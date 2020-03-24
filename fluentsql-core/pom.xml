@@ -2,16 +2,16 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>fluentsql</artifactId>
-        <groupId>com.artlongs.fluentsql</groupId>
-        <version>0.0.2-snapshot</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.artlongs.fluentsql</groupId>
+        <artifactId>fluentsql</artifactId>
+        <version>0.0.3-snapshot</version>
+    </parent>
 
     <name>fluentsql-core</name>
     <artifactId>fluentsql-core</artifactId>
-    <version>0.0.2-snapshot</version>
+    <version>0.0.3-snapshot</version>
 
     <dependencies>
         <dependency>
