@@ -893,23 +893,29 @@ public abstract class BaseQuery<T> implements Query{
     }
 
     public void clear() {
-        del = null;
-        count = null;
-        sum = null;
-        casethen = null;
-        sumcasethen = null;
-        select = null;
-        subselect = null;
-        from = null;
-        join = null;
-        where = null;
-        group = null;
-        having = null;
-        order = null;
-        limit = null;
-        link = null;
+        initSqlTemplate();
         clearMap(params);
     }
+
+    private void initSqlTemplate(){
+        del = new StringBuffer();
+        count = new StringBuffer();
+        sum = new StringBuffer();
+        casethen = new StringBuffer();
+        sumcasethen = new StringBuffer();
+        select = new StringBuffer();
+        subselect = new StringBuffer();
+        from = new StringBuffer();
+        join = new StringBuffer();
+        where = new StringBuffer();
+        group = new StringBuffer();
+        having = new StringBuffer();
+        order = new StringBuffer();
+        limit = new StringBuffer();
+        update = new StringBuffer();
+        insert = new StringBuffer();
+    }
+
 
 
 
