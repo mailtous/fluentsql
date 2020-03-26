@@ -50,7 +50,7 @@ public class TestSql2oController extends BaseController {
         user.setDeptId(1);
         user.setMoney(new BigDecimal(1000.22));
         user.setCreateTime(new Date());
-        new com.artlongs.fluentsql.jdbc.Lq<User>(User.class, getJdbc()).toSave(user);
+        new Lq<User>(User.class, getSql2o()).toSave(user);
         return user;
     }
 

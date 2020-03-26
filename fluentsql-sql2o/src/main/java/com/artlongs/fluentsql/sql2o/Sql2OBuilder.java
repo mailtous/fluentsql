@@ -6,12 +6,11 @@ import org.sql2o.Sql2o;
 import javax.sql.DataSource;
 
 /**
- * Func :
+ * Func : 创建 Sql2o
  *
  * @author: leeton on 2019/6/26.
  */
 public class Sql2OBuilder {
-    private static Sql2o sql2o =  null;
 
     /**
      * 使用 SQL2O 自己的数据库连接池,来创建 SQL2O
@@ -20,12 +19,8 @@ public class Sql2OBuilder {
      * @param pwd
      * @return
      */
-    public static Sql2o build(String jdbcurl,String username,String pwd) { //使用 sql2o 自己的数据库连接池
-        //new Sql2o("jdbc:postgresql://localhost/Sql2oTestDb", "root", "123456");
-        if (null == sql2o) {
-            sql2o = new Sql2o(jdbcurl, username, pwd);
-        }
-        return sql2o;
+    public static Sql2o build(String jdbcurl,String username,String pwd) {
+        return new Sql2o(jdbcurl, username, pwd);
     }
 
     /**
@@ -33,18 +28,23 @@ public class Sql2OBuilder {
      * @param dataSource
      * @return
      */
-    public static Sql2o build(DataSource dataSource) {//使用外部的数据库连接池
-        if (null == sql2o) {
-            sql2o = new Sql2o(dataSource);
-        }
-        return sql2o;
+    public static Sql2o build(DataSource dataSource) {
+        return new Sql2o(dataSource);
     }
-    public static Sql2o buildOfHikariCP(String url,String username,String pwd,String driverClassName,int maxPoolSize,int minIdle) {//使用外部的数据库连接池
-        if (null == sql2o) {
-            DataSource source = DbUitls.getHikariDataSource(url, username, pwd, driverClassName,maxPoolSize, minIdle);
-            sql2o = new Sql2o(source);
-        }
-        return sql2o;
+
+    /**
+     * 使用Hikari数据库连接池
+     * @param url
+     * @param username
+     * @param pwd
+     * @param driverClassName
+     * @param maxPoolSize
+     * @param minIdle
+     * @return
+     */
+    public static Sql2o buildOfHikariCP(String url,String username,String pwd,String driverClassName,int maxPoolSize,int minIdle) {
+        DataSource source = DbUitls.getHikariDataSource(url, username, pwd, driverClassName,maxPoolSize, minIdle);
+        return new Sql2o(source);
     }
 
 }
