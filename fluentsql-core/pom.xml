@@ -6,12 +6,12 @@
     <parent>
         <groupId>com.artlongs.fluentsql</groupId>
         <artifactId>fluentsql</artifactId>
-        <version>0.0.3-snapshot</version>
+        <version>0.0.4-snapshot</version>
     </parent>
 
     <name>fluentsql-core</name>
     <artifactId>fluentsql-core</artifactId>
-    <version>0.0.3-snapshot</version>
+    <version>0.0.4-snapshot</version>
 
     <dependencies>
         <dependency>

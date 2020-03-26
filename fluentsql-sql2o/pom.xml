@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.artlongs.fluentsql</groupId>
         <artifactId>fluentsql</artifactId>
-        <version>0.0.3-snapshot</version>
+        <version>0.0.4-snapshot</version>
     </parent>
 
     <name>fluentsql-sql2o</name>
     <groupId>com.artlongs.fluentsql</groupId>
     <artifactId>fluentsql-sql2o</artifactId>
-    <version>0.0.3-snapshot</version>
+    <version>0.0.4-snapshot</version>
 
     <dependencies>
         <dependency>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-core</artifactId>
-            <version>0.0.3-snapshot</version>
+            <version>0.0.4-snapshot</version>
         </dependency>
 <!--        <dependency>
             <groupId>org.simpleflatmapper</groupId>
