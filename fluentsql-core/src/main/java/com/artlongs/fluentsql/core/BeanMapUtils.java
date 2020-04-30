@@ -16,20 +16,43 @@ import java.util.*;
  * @author: leeton on 2019/6/14.
  */
 public class BeanMapUtils {
+    private static boolean skip_null = true;  //跳过空值
+    private static boolean ign_camel = false; //忽略驼峰
+    private static boolean ign_underline = false; //忽略下划线
+    private static boolean spell_fuzzy_match = false; //模糊匹配的模式
 
     public static <T> T copyTo(Object source, T target, String... ignList) {
         copy(source, target, ignList);
         return (T) target;
     }
 
-    /**
-     * COPY 属性(对象与MAP通用)
-     *
-     * @param source  原类
-     * @param target  目标类
-     * @param ignList 忽略列表
-     */
-    public static void copy(Object source, Object target, String... ignList) {
+    public static BeanMapUtils builder(){
+        return new BeanMapUtils();
+    }
+
+    public static BeanMapUtils fuzzy(){
+        return BeanMapUtils.builder().setSpellFuzzyMatch(true);
+    }
+
+    public BeanMapUtils setSkipNullVal(boolean tf) {
+        this.skip_null = tf ;
+        return this;
+    }
+    public BeanMapUtils setIgnCamel(boolean tf) {
+        this.ign_camel = tf ;
+        return this;
+    }
+
+    public BeanMapUtils setIgnUnderline(boolean tf) {
+        this.ign_underline = tf;
+        return this;
+    }
+    public BeanMapUtils setSpellFuzzyMatch(boolean tf) {
+        this.spell_fuzzy_match = tf;
+        return this;
+    }
+
+    public void c(Object source, Object target, String... ignList){
         if (null == source || target == null) {//为空,则不进行COPY属性
             return;
         }
@@ -44,6 +67,23 @@ public class BeanMapUtils {
         toPojo(source, target, ignList);
     }
 
+    public <T> T cpTo(Object source, T target, String... ignList) {
+        c(source, target, ignList);
+        return (T) target;
+    }
+
+
+    /**
+         * COPY 属性(对象与MAP通用)
+         *
+         * @param source  原类
+         * @param target  目标类
+         * @param ignList 忽略列表
+         */
+    public static void copy(Object source, Object target, String... ignList) {
+        BeanMapUtils.builder().c(source, target, ignList);
+    }
+
     private static void toPojo(Object source, Object target, String[] ignList) {
         Set<Field> trageFieldList = getFields(target.getClass());
         Set<Field> sourceFieldList = getFields(source.getClass());
@@ -54,11 +94,10 @@ public class BeanMapUtils {
             for (Field sField : sourceFieldList) {
                 if (isFilterAttr(Arrays.asList(ignList), sField.getName())) continue;
                 Object value = getFieldValue(source, sField);
-                if (null != value) {
-                    Field field = getFieldByName(trageFieldList, sField.getName());
-                    if (null != field) {
-                        setFieldValue(target, field, value);
-                    }
+                if (skip_null && null == value) continue; //跳过空值
+                Field field = getFieldByName(trageFieldList, sField.getName());
+                if (null != field) {
+                    setFieldValue(target, field, value);
                 }
             }
         }
@@ -73,9 +112,8 @@ public class BeanMapUtils {
             for (Field sField : sourceFieldList) {
                 if (isFilterAttr(Arrays.asList(ignList), sField.getName())) continue;
                 Object value = getFieldValue(source, sField);
-                if (null != value) {
-                    targetMap.put(sField.getName(), value);
-                }
+                if (skip_null && null == value) continue;
+                targetMap.put(sField.getName(), value);
             }
         }
     }
@@ -88,6 +126,7 @@ public class BeanMapUtils {
         for (String key : sourceMap.keySet()) {
             if (isFilterAttr(Arrays.asList(ignList), key)) continue;
             Object val = sourceMap.get(key);
+            if(skip_null && null==val) continue;
             Field field = getFieldByName(targetFields, key);
             if (null != field) {
                 setFieldValue(target, field, val);
@@ -105,11 +144,34 @@ public class BeanMapUtils {
 
     public static Field getFieldByName(Set<Field> fields, String name) {
         for (Field field : fields) {
-            if (field.getName().equals(name)) {
+            String[] arr = new String[]{field.getName(), name};
+            if(ign_camel){
+                lowerCase(arr);
+            }
+            if (ign_underline) {
+                ignUnderline(arr);
+            }
+            if(spell_fuzzy_match){
+                spellFuzzyMatch(arr);
+            }
+            if (arr[0].equals(arr[1])) {
                 return field;
             }
         }
         return null;
+    }
+
+    private static void lowerCase(String[] arr) {//全转为小写
+        arr[0] = arr[0].toLowerCase();
+        arr[1] = arr[1].toLowerCase();
+    }
+    private static void ignUnderline(String[] arr) {//去掉下划线
+        arr[0] = StringKit.deCodeUnderlined(arr[0]);
+        arr[1] = StringKit.deCodeUnderlined(arr[1]);
+    }
+    private static void spellFuzzyMatch(String[] arr) {//模糊拼写区别
+        ignUnderline(arr);
+        lowerCase(arr);
     }
 
     private static String replacePrefix(String name) {
@@ -259,7 +321,7 @@ public class BeanMapUtils {
 
         class Foo {
             private Integer id;
-            private String name;
+            private String userName;
 
             public Integer getId() {
                 return id;
@@ -269,20 +331,71 @@ public class BeanMapUtils {
                 this.id = id;
             }
 
-            public String getName() {
-                return name;
+            public String getUserName() {
+                return userName;
             }
 
-            public void setName(String name) {
-                this.name = name;
+            public void setUserName(String userName) {
+                this.userName = userName;
             }
 
             @Override
             public String toString() {
-                return "Foo{" +
-                        "id=" + id +
-                        ", name='" + name + '\'' +
-                        '}';
+                final StringBuilder sb = new StringBuilder("Foo{");
+                sb.append("id=").append(id);
+                sb.append(", userName='").append(userName).append('\'');
+                sb.append('}');
+                return sb.toString();
+            }
+        }
+
+        class Du{
+            private Integer id;
+            private String user_name;
+
+            public Integer getId() {
+                return id;
+            }
+
+            public void setId(Integer id) {
+                this.id = id;
+            }
+
+            public String getUser_name() {
+                return user_name;
+            }
+
+            public void setUser_name(String user_name) {
+                this.user_name = user_name;
+            }
+
+            @Override
+            public String toString() {
+                final StringBuilder sb = new StringBuilder("Du{");
+                sb.append("id=").append(id);
+                sb.append(", user_name='").append(user_name).append('\'');
+                sb.append('}');
+                return sb.toString();
+            }
+        }
+
+        class Boo {
+            private Integer id;
+
+            public Integer getId() {
+                return id;
+            }
+
+            public void setId(Integer id) {
+                this.id = id;
+            }
+
+            @Override
+            public String toString() {
+                final StringBuilder sb = new StringBuilder("Boo{");
+                sb.append("id=").append(id);
+                sb.append('}');
+                return sb.toString();
             }
         }
         Foo foo = new Foo();
@@ -291,7 +404,7 @@ public class BeanMapUtils {
         Map<String, Object> tMap = new HashMap<>();
 
         foo.setId(111);
-        foo.setName("alice");
+        foo.setUserName("alice");
         System.err.println("foo1= " + foo.toString());
 
         BeanMapUtils.copy(foo, foo2);
@@ -302,5 +415,25 @@ public class BeanMapUtils {
 
         BeanMapUtils.copy(tMap, foo3);
         System.err.println("tMap -> foo = " + foo3.toString());
+
+        Boo boo = new Boo();
+        BeanMapUtils.copy(foo, boo);
+        System.err.println("foo -> boo = " + boo.toString());
+
+        boo.setId(999);
+        BeanMapUtils.copy(boo, foo);
+        System.err.println("boo -> foo = " + foo.toString());
+
+
+        BeanMapUtils.copy(tMap, boo);
+        System.err.println("tMap -> boo = " + boo.toString());
+
+        Du du = new Du();
+
+        BeanMapUtils.builder().setSpellFuzzyMatch(true).cpTo(foo,du);
+        System.err.println("foo -> du = " + du.toString());
+
+
+
     }
 }

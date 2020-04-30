@@ -2,16 +2,15 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.artlongs.fluentsql</groupId>
         <artifactId>fluentsql-exmaple</artifactId>
-        <version>0.0.4-snapshot</version>
+        <version>${top.version}</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <name>example-spring</name>
     <artifactId>example-spring</artifactId>
-    <version>0.0.4-snapshot</version>
 
     <dependencies>
         <dependency>
@@ -50,12 +49,12 @@
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-jdbctemplate</artifactId>
-            <version>0.0.4-snapshot</version>
+            <version>${top.version}</version>
         </dependency>
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-sql2o</artifactId>
-            <version>0.0.4-snapshot</version>
+            <version>${top.version}</version>
         </dependency>
         <!-- fluentsql + h2  END -->
     </dependencies>

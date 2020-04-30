@@ -469,9 +469,17 @@ public abstract class BaseQuery<T> implements Query{
     }
 
     public BaseQuery<T> update(Object entity) {
-        if (where.length() == 0) throw new RuntimeException("UPDATE 之前必须有 WHERE 条件以避免大范围变更数据.");
         this.update.append(UPDATE.symbol).append("`").append(getTableName(this.clz)).append("`").append(" SET ");
         this.update.append(getKeyValCondition(entity, ":_up_"));
+        setDefaultWhereOfId(entity);
+        return this;
+    }
+
+    private BaseQuery<T> setDefaultWhereOfId(Object entity) {
+        if(0==this.where.length()){
+            Attr id = Attr.getRealIdAttr(entity);
+            this.where.append(" WHERE ").append("`").append(id.getName()).append("`='").append(id.getVal()).append("'");
+        }
         return this;
     }
 

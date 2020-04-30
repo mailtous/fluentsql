@@ -108,6 +108,11 @@ public class Qe<T> extends LambdaQuery<T> {
         return rows;
     }
 
+    @Override
+    public int toBatchInsert(Object entity, Map<String, Object> params) {
+        return 0;
+    }
+
     public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
         checkProvider(jdbcTemplate);
         int[] rows = jdbcTemplate.batchUpdate(symbolsql, batchValues);

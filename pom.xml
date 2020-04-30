@@ -8,7 +8,7 @@
     <name>fluentsql</name>
     <groupId>com.artlongs.fluentsql</groupId>
     <artifactId>fluentsql</artifactId>
-    <version>0.0.4-snapshot</version>
+    <version>${top.version}</version>
 
     <modules>
         <module>fluentsql-core</module>
@@ -18,6 +18,7 @@
     </modules>
 
     <properties>
+        <top.version>0.0.5.1-SNAPSHOT</top.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -88,6 +89,14 @@
                         <maxmem>512m</maxmem><!-- 编译器使用的最大内存 -->
                     </configuration>
                     <inherited>true</inherited>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <generateBackupPoms>false</generateBackupPoms>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

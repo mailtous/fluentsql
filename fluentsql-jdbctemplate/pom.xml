@@ -7,13 +7,12 @@
   <parent>
     <groupId>com.artlongs.fluentsql</groupId>
     <artifactId>fluentsql</artifactId>
-    <version>0.0.4-snapshot</version>
+    <version>${top.version}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <name>fluentsql-jdbctemplate</name>
   <artifactId>fluentsql-jdbctemplate</artifactId>
-  <version>0.0.4-snapshot</version>
 
   <dependencies>
     <dependency>
@@ -24,7 +23,7 @@
     <dependency>
       <groupId>com.artlongs.fluentsql</groupId>
       <artifactId>fluentsql-core</artifactId>
-      <version>0.0.4-snapshot</version>
+      <version>${top.version}</version>
     </dependency>
   </dependencies>
 

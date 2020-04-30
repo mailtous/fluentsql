@@ -1,6 +1,7 @@
 package com.artlongs.fluentsql.core;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Func :
@@ -23,6 +24,8 @@ public interface Query {
     int toUpdate(Object entity);
 
     int toSave(Object entity);
+
+    int toBatchInsert(Object entity, Map<String, Object> params);
 
     <T> Page<T> toPage(Page<T> page);
 

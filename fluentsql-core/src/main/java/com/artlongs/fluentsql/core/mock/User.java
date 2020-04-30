@@ -1,5 +1,6 @@
 package com.artlongs.fluentsql.core.mock;
 
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -9,6 +10,7 @@ import java.util.Date;
  * @author: leeton on 2019/6/21.
  */
 public class User {
+    @Id
     private Integer id;
     private Integer deptId;
     private String userName;

@@ -1,10 +1,13 @@
 package com.artlongs.fluentsql.core;
 
+import com.artlongs.fluentsql.core.mock.User;
 import com.trigersoft.jaque.expression.*;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.List;
 import java.util.function.Function;
@@ -21,6 +24,7 @@ public class Attr<T> {
     private String column; // 对应的字段名称
     private Member member;
     private String tableName;
+    private Object val;
 
     // this interface is required to make the lambda Serializable, which removes a need for
     // jdk.internal.lambda.dumpProxyClasses system property. See below.
@@ -109,6 +113,33 @@ public class Attr<T> {
         return StringKit.enCodeUnderlined(c.getSimpleName());
     }
 
+    /**
+     * 取得实体类的真实ID与值
+     * @param c
+     * @param <T>
+     * @return
+     */
+    public static <T> Attr getRealIdAttr(T c) {
+        Field fields[]=c.getClass().getDeclaredFields();//c 是实体类名称
+        Attr attr = new Attr();
+        try {
+            for (Field f : fields) {
+                if(null != f.getAnnotation(Id.class) || f.getName().equals("id")){
+                    f.setAccessible(true);
+                    attr.clz = c.getClass();
+                    attr.column = StringKit.enCodeUnderlined(f.getName());
+                    attr.name = f.getName();
+                    attr.val = f.get(c);
+                    return attr;
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return attr;
+
+    }
+
 
     public String getUnderLineName(String arrtName) {
         return StringKit.enCodeUnderlined(arrtName);
@@ -155,5 +186,35 @@ public class Attr<T> {
 
     public void setColumn(String column) {
         this.column = column;
+    }
+
+    public Object getVal() {
+        return val;
+    }
+
+    public void setVal(Object val) {
+        this.val = val;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Attr{");
+        sb.append("clz=").append(clz);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", column='").append(column).append('\'');
+        sb.append(", member=").append(member);
+        sb.append(", tableName='").append(tableName).append('\'');
+        sb.append(", val=").append(val);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        User user = new User();
+        user.setId(100);
+
+        Attr objs = Attr.getRealIdAttr(user);
+        System.err.println(objs);
+
     }
 }

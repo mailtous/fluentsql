@@ -106,7 +106,11 @@ public class Qe<T> extends LambdaQuery<T> {
         return rows;
     }
 
-/*    public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
+    @Override
+    public int toBatchInsert(Object entity, Map<String, Object> params) {
+        return 0;
+    }
+    /*    public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
         checkProvider(sql2o);
         int[] rows = sql2o.batchUpdate(symbolsql, batchValues);
         for (Map<String, ?> batchValue : batchValues) {
@@ -279,7 +283,12 @@ public class Qe<T> extends LambdaQuery<T> {
                .build();
 
        System.out.println("sql=" + joinSelf2);
+       User u = new User();
+       u.setId(100);
+       u.setUserName("alice");
 
+       String updateSql = new Qe(User.class).update(u).build();
+       System.err.println(updateSql);
 
 
    }
