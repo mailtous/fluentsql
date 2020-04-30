@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.actframework</groupId>
             <artifactId>act-starter-parent</artifactId>
-            <version>1.8.30.0</version>
+            <version>1.8.32.0</version>
         </dependency>
 
         <!-- fluentsql + h2  BEGIN -->
