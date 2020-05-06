@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.artlongs.fluentsql</groupId>
         <artifactId>fluentsql-exmaple</artifactId>
-        <version>${top.version}</version>
+        <version>0.0.5.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,8 +15,8 @@
     <dependencies>
         <dependency>
             <groupId>org.actframework</groupId>
-            <artifactId>act-starter-parent</artifactId>
-            <version>1.8.32.0</version>
+            <artifactId>act</artifactId>
+            <version>1.8.32</version>
         </dependency>
 
         <!-- fluentsql + h2  BEGIN -->
@@ -42,13 +42,13 @@
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-jdbctemplate</artifactId>
-            <version>${top.version}</version>
+            <version>0.0.5.2-SNAPSHOT</version>
         </dependency>
         <!-- sql2o 按需加 -->
         <dependency>
             <groupId>com.artlongs.fluentsql</groupId>
             <artifactId>fluentsql-sql2o</artifactId>
-            <version>${top.version}</version>
+            <version>0.0.5.2-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
