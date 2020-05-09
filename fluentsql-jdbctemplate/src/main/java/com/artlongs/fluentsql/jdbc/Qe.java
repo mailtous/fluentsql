@@ -1,9 +1,6 @@
 package com.artlongs.fluentsql.jdbc;
 
-import com.artlongs.fluentsql.core.Assert;
-import com.artlongs.fluentsql.core.BaseQuery;
-import com.artlongs.fluentsql.core.LambdaQuery;
-import com.artlongs.fluentsql.core.Page;
+import com.artlongs.fluentsql.core.*;
 import com.artlongs.fluentsql.core.mock.Dept;
 import com.artlongs.fluentsql.core.mock.User;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -108,9 +105,25 @@ public class Qe<T> extends LambdaQuery<T> {
         return rows;
     }
 
-    @Override
-    public int toBatchInsert(Object entity, Map<String, Object> params) {
-        return 0;
+    public int toBatchInsert(List<?> batchValues) {
+        if (null == batchValues || batchValues.size() == 0) return 0;
+        checkProvider(jdbcTemplate);
+        String insertSql = buildBatchInsertSql().buildSymbolsql();
+        Assert.isTrue(insertSql.toLowerCase().indexOf("where") != -1, "Batch INSERT canot include [WHERR] condition. " + insertSql);
+        int[] nums = jdbcTemplate.batchUpdate(insertSql, listToMapArr(batchValues));
+        return nums.length;
+    }
+
+    private Map<String, ?>[] listToMapArr(List<?> batchValues) {
+        Map<String, ?>[] mapArr = new HashMap[batchValues.size()];
+        int i = 0;
+        for (Object o : batchValues) {
+            Map<String, Object> oMap = new HashMap<>(o.getClass().getDeclaredFields().length);
+            BeanMapUtils.builder().toUnderline().c(o, oMap);
+            mapArr[i] = oMap;
+            i++;
+        }
+        return mapArr;
     }
 
     public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
@@ -152,7 +165,7 @@ public class Qe<T> extends LambdaQuery<T> {
      */
     private Page<T> getPage(Class<T> clazz, Page page) {
         checkProvider(jdbcTemplate);
-        if (this.limit.length()>0) {
+        if (this.limit.length() > 0) {
             throw new RuntimeException("分页参数不要通过[limit]传入.");
         }
         String countSql = this.count();
@@ -165,7 +178,7 @@ public class Qe<T> extends LambdaQuery<T> {
             long offset = (pageNumber - 1) * pageSize + (offsetStartZero ? 0 : 1);
             String pageSql = getMysqlLimit(this.buildSymbolsql(), offset, pageSize);
             Map<String, Object> jdbdParams = toJdbcParams(params);
-            list = getList(pageSql, jdbdParams,clazz);
+            list = getList(pageSql, jdbdParams, clazz);
             clearMap(jdbdParams);
         }
         page.setTotal(count);
@@ -195,27 +208,27 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     private void checkProvider(NamedParameterJdbcTemplate jdbcTemplate) {
-        Assert.isNull(jdbcTemplate,"NamedParameterJdbcTemplate 不能为 NULL,请先传入.");
+        Assert.isNull(jdbcTemplate, "NamedParameterJdbcTemplate 不能为 NULL,请先传入.");
     }
 
     // ====== 集成查询方法 END ====================================================================================================
 
 
-   public static void main(String[] args) throws Exception {
-       String sql = new Qe(User.class)
-               .select("user_uame")
+    public static void main(String[] args) throws Exception {
+        String sql = new Qe(User.class)
+                .select("user_uame")
 //            .andIn("dept_id", new Qe(Dept.class).select("id").andGt("id", 0))
-               .sum("id", Dept.class)
+                .sum("id", Dept.class)
 //                .sumCase("id", 1, "money", "money")
-               .leftJoin(Dept.class)
-               .andLike("user_uame", "alice")
-               .andIn("id", new Integer[]{1, 2, 3})
-               .andBetween("create_date", new Date(), new Date())
-               .group("dept_id")
-               .having("dept_id", Opt.GT, 0)
-               .asc("dept_id")
-               .desc("user_uame")
-               .build();
+                .leftJoin(Dept.class)
+                .andLike("user_uame", "alice")
+                .andIn("id", new Integer[]{1, 2, 3})
+                .andBetween("create_date", new Date(), new Date())
+                .group("dept_id")
+                .having("dept_id", Opt.GT, 0)
+                .asc("dept_id")
+                .desc("user_uame")
+                .build();
 
         System.out.println("sql=" + sql);
 
@@ -240,7 +253,6 @@ public class Qe<T> extends LambdaQuery<T> {
 
 
     }
-
 
 
 }

@@ -1,9 +1,6 @@
 package com.artlongs.fluentsql.sql2o;
 
-import com.artlongs.fluentsql.core.Assert;
-import com.artlongs.fluentsql.core.BaseQuery;
-import com.artlongs.fluentsql.core.LambdaQuery;
-import com.artlongs.fluentsql.core.Page;
+import com.artlongs.fluentsql.core.*;
 import com.artlongs.fluentsql.core.mock.Dept;
 import com.artlongs.fluentsql.core.mock.User;
 import org.sql2o.Connection;
@@ -107,8 +104,32 @@ public class Qe<T> extends LambdaQuery<T> {
     }
 
     @Override
-    public int toBatchInsert(Object entity, Map<String, Object> params) {
-        return 0;
+    public int toBatchInsert(List<?> batchValues) {
+        if(null == batchValues || batchValues.size() ==0) return 0;
+        checkProvider(sql2o);
+        String insertSql = buildBatchInsertSql().buildSymbolsql();
+        Assert.isTrue(insertSql.toLowerCase().indexOf("where")!=-1,"Batch INSERT canot include [WHERR] condition. " + insertSql);
+        Connection con = null;
+        try {
+            con = sql2o.beginTransaction();
+            Query q = con.createQuery(insertSql);
+            q.setAutoDeriveColumnNames(true);
+            for (Object insertObj : batchValues) {
+                Map<String, ?> fieldMap = new HashMap<>(32);
+                BeanMapUtils.copyTo(insertObj, fieldMap);
+                for (String key : fieldMap.keySet()) {
+                    q.addParameter(StringKit.enCodeUnderlined(key), fieldMap.get(key));
+                }
+                q.addToBatch();
+                fieldMap.clear();
+            }
+            q.executeUpdate();
+            con.commit();
+            return batchValues.size();
+        } catch (Exception ex) {
+            throw new Sql2oException("BATCH INSERT ERROR: "+ex);
+        }
+
     }
     /*    public int[] toUpdate(String symbolsql, Map<String, ?>[] batchValues) {//批量更新,symbolsql:还未设值的sql
         checkProvider(sql2o);
@@ -286,6 +307,13 @@ public class Qe<T> extends LambdaQuery<T> {
        User u = new User();
        u.setId(100);
        u.setUserName("alice");
+
+       User u2 = new User();
+       u.setId(200);
+       u.setUserName("alice200");
+       List<User> userList = new ArrayList<>();
+       userList.add(u);
+       userList.add(u2);
 
        String updateSql = new Qe(User.class).update(u).build();
        System.err.println(updateSql);

@@ -489,6 +489,42 @@ public abstract class BaseQuery<T> implements Query{
         return this;
     }
 
+    public BaseQuery<T> buildBatchInsertSql(){
+        this.update.append(INSERT.symbol).append("`").append(getTableName(this.clz)).append("`");
+        StringBuffer sql = new StringBuffer(128);
+        Map<String, Object> fieldMap = new HashMap<String, Object>(32);
+        BeanMapUtils.builder().setSkipNullVal(false).c(getInstance(), fieldMap);
+
+        sql.append(" (");
+        for (String k : fieldMap.keySet()) {//key
+            String _k = StringKit.enCodeUnderlined(k);
+            sql.append("`").append(_k).append("`").append(", ");
+        }
+        sql.deleteCharAt(sql.length() - 2);
+        sql.append(") VALUES (");
+        for (String k : fieldMap.keySet()) {// val
+            String _k = StringKit.enCodeUnderlined(k);
+            sql.append(":").append(_k).append(", ");
+        }
+        sql.deleteCharAt(sql.length() - 2);
+        sql.append(" ) ");
+        fieldMap.clear();
+        this.update.append(sql);
+        return this;
+    }
+
+    private Object getInstance() {
+        try {
+            T o = this.clz.newInstance();
+            return o;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("New Instace error of:"+this.clz.getName());
+    }
+
     private StringBuffer getKeyValCondition(Object entity, String keyPrev) {
         StringBuffer sql = new StringBuffer(128);
         Map<String, Object> fieldMap = new HashMap<String, Object>(20);
@@ -499,6 +535,7 @@ public abstract class BaseQuery<T> implements Query{
             addParams(keyPrev + _k, fieldMap.get(k));
         }
         sql.deleteCharAt(sql.length() - 2);
+        fieldMap.clear();
         return sql;
     }
 

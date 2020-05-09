@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.artlongs.fluentsql</groupId>
     <artifactId>fluentsql</artifactId>
-    <version>0.0.5.3-SNAPSHOT</version>
+    <version>0.0.5.4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -23,7 +23,7 @@
     <dependency>
       <groupId>com.artlongs.fluentsql</groupId>
       <artifactId>fluentsql-core</artifactId>
-      <version>0.0.5.3-SNAPSHOT</version>
+      <version>0.0.5.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

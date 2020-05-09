@@ -20,6 +20,8 @@ public class BeanMapUtils {
     private static boolean ign_camel = false; //忽略驼峰
     private static boolean ign_underline = false; //忽略下划线
     private static boolean spell_fuzzy_match = false; //模糊匹配的模式
+    private static boolean to_underline = false; // camel_to_underline
+    private static boolean to_camel = false; // underline_to_camel
 
     public static <T> T copyTo(Object source, T target, String... ignList) {
         copy(source, target, ignList);
@@ -49,6 +51,14 @@ public class BeanMapUtils {
     }
     public BeanMapUtils setSpellFuzzyMatch(boolean tf) {
         this.spell_fuzzy_match = tf;
+        return this;
+    }
+    public BeanMapUtils toUnderline() {
+        this.to_underline = true;
+        return this;
+    }
+    public BeanMapUtils toCamel() {
+        this.to_camel = true;
         return this;
     }
 
@@ -113,9 +123,19 @@ public class BeanMapUtils {
                 if (isFilterAttr(Arrays.asList(ignList), sField.getName())) continue;
                 Object value = getFieldValue(source, sField);
                 if (skip_null && null == value) continue;
-                targetMap.put(sField.getName(), value);
+                targetMap.put(formatSpell(sField.getName()), value);
             }
         }
+    }
+
+    private static String formatSpell(String key) {
+        if(to_underline){
+            return StringKit.enCodeUnderlined(key);
+        }
+        if(to_camel){
+            return StringKit.deCodeUnderlined(key);
+        }
+        return key;
     }
 
     private static void fromMap(Map<String, Object> sourceMap, Object target, String... ignList) {

@@ -21,11 +21,20 @@ public class BaseController {
     private Sql2o sql2o;
     //
     AppConfig conf = Act.appConfig();
+
     //h2
-    String driver = conf.get("db.h2.driver").toString();
+   /* String driver = conf.get("db.h2.driver").toString();
     String url = conf.get("db.h2.url").toString();
     String username = conf.get("db.h2.username").toString();
     String password = conf.get("db.h2.password").toString();
+    Integer maxpoolsize = $.convert(conf.get("hikari.maxpoolsize")).toInt();
+    Integer minidle = $.convert(conf.get("hikari.minidle")).toInt();*/
+
+    //mysql
+    String driver = conf.get("db.default.driver").toString();
+    String url = conf.get("db.default.url").toString();
+    String username = conf.get("db.default.username").toString();
+    String password = conf.get("db.default.password").toString();
     Integer maxpoolsize = $.convert(conf.get("hikari.maxpoolsize")).toInt();
     Integer minidle = $.convert(conf.get("hikari.minidle")).toInt();
 
@@ -61,14 +70,6 @@ public class BaseController {
     public NamedParameterJdbcTemplate getJdbc() {
         if (null == jdbcTemplate) {
             AppConfig conf = Act.appConfig();
-            //mysql
-/*            String driver = conf.get("db.default.driver").toString();
-            String url = conf.get("db.default.url").toString();
-            String username = conf.get("db.default.username").toString();
-            String password = conf.get("db.default.password").toString();
-            Integer maxpoolsize = $.convert(conf.get("hikari.maxpoolsize")).toInt();
-            Integer minidle = $.convert(conf.get("hikari.minidle")).toInt();*/
-
             DataSource dataSource = DbUitls.getHikariDataSource(url, username, password, driver, maxpoolsize, minidle);
             jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         }
