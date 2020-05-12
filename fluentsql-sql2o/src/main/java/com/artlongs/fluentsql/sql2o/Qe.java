@@ -123,7 +123,7 @@ public class Qe<T> extends LambdaQuery<T> {
                 q.addToBatch();
                 fieldMap.clear();
             }
-            q.executeUpdate();
+            q.executeBatch();
             con.commit();
             return batchValues.size();
         } catch (Exception ex) {
