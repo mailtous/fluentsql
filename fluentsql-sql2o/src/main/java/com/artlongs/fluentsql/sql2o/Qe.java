@@ -111,7 +111,7 @@ public class Qe<T> extends LambdaQuery<T> {
         Assert.isTrue(insertSql.toLowerCase().indexOf("where")!=-1,"Batch INSERT canot include [WHERR] condition. " + insertSql);
         Connection con = null;
         try {
-            con = sql2o.beginTransaction();
+            con = sql2o.open();
             Query q = con.createQuery(insertSql);
             q.setAutoDeriveColumnNames(true);
             for (Object insertObj : batchValues) {
@@ -127,6 +127,7 @@ public class Qe<T> extends LambdaQuery<T> {
             con.commit();
             return batchValues.size();
         } catch (Exception ex) {
+            logger.warning(insertSql);
             throw new Sql2oException("BATCH INSERT ERROR: "+ex);
         }
 

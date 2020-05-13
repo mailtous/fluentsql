@@ -116,9 +116,17 @@ public class TestSql2oController {
         userList.add(user);
         userList.add(user2);
 
-       Integer nums = new Qe(User.class,sql2o).toBatchInsert(userList);
+        for (User u : userList) {
+            List<User> insertList = new ArrayList<>();
+            insertList.add(u);
+            Integer nums = new Qe(User.class,sql2o).toBatchInsert(insertList);
+            insertList.clear();
 
-        return "insert recodes:" + nums;
+        }
+
+
+
+        return "insert recodes:" ;
     }
 
 
