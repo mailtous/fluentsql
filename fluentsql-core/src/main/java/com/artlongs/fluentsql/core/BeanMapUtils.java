@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class BeanMapUtils {
     private static boolean skip_null = true;  //跳过空值
-    private static boolean skip_transient = false;  //跳过临时字段
+    private static boolean skip_transient = true;  //跳过临时字段
     private static boolean skip_json_ignore = false;  //跳过 JsonIgnore
     private static boolean skip_json_reference = false;  //跳过 JsonBackReference
     private static boolean ign_camel = false; //忽略驼峰
