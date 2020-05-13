@@ -490,10 +490,10 @@ public abstract class BaseQuery<T> implements Query{
     }
 
     public BaseQuery<T> buildBatchInsertSql(){
-        this.update.append(INSERT.symbol).append("`").append(getTableName(this.clz)).append("`");
+        this.insert.append(INSERT.symbol).append("`").append(getTableName(this.clz)).append("`");
         StringBuffer sql = new StringBuffer(128);
         Map<String, Object> fieldMap = new HashMap<String, Object>(32);
-        BeanMapUtils.builder().setSkipNullVal(false).c(getInstance(), fieldMap);
+        BeanMapUtils.builder().setSkipNullVal(false).setSkipTransient(true).c(getInstance(), fieldMap);
 
         sql.append(" (");
         for (String k : fieldMap.keySet()) {//key
@@ -509,7 +509,7 @@ public abstract class BaseQuery<T> implements Query{
         sql.deleteCharAt(sql.length() - 2);
         sql.append(" ) ");
         fieldMap.clear();
-        this.update.append(sql);
+        this.insert.append(sql);
         return this;
     }
 

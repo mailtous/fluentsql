@@ -17,6 +17,9 @@ import java.util.*;
  */
 public class BeanMapUtils {
     private static boolean skip_null = true;  //跳过空值
+    private static boolean skip_transient = false;  //跳过临时字段
+    private static boolean skip_json_ignore = false;  //跳过 JsonIgnore
+    private static boolean skip_json_reference = false;  //跳过 JsonBackReference
     private static boolean ign_camel = false; //忽略驼峰
     private static boolean ign_underline = false; //忽略下划线
     private static boolean spell_fuzzy_match = false; //模糊匹配的模式
@@ -38,6 +41,18 @@ public class BeanMapUtils {
 
     public BeanMapUtils setSkipNullVal(boolean tf) {
         this.skip_null = tf ;
+        return this;
+    }
+    public BeanMapUtils setSkipTransient(boolean tf) {
+        this.skip_transient = tf ;
+        return this;
+    }
+    public BeanMapUtils setSkipJsonIgnore(boolean tf) {
+        this.skip_json_ignore = tf ;
+        return this;
+    }
+    public BeanMapUtils setSkipJsonRef(boolean tf) {
+        this.skip_json_reference= tf ;
         return this;
     }
     public BeanMapUtils setIgnCamel(boolean tf) {
@@ -221,6 +236,7 @@ public class BeanMapUtils {
         for (Field field : fields) {
             if (Modifier.isFinal(field.getModifiers())) continue;
             if (Modifier.isStatic(field.getModifiers())) continue;
+            if (skip_transient && Modifier.isTransient(field.getModifiers())) continue;
             if (findIgnoreAnno(field)) continue;
             fieldCache.add(field);
         }
@@ -252,9 +268,10 @@ public class BeanMapUtils {
     private static boolean findIgnoreAnno(Field field) {
         Annotation[] annoList = field.getAnnotations();
         for (Annotation annotation : annoList) {
-            if ("JsonIgnore".equalsIgnoreCase(annotation.annotationType().getSimpleName())) return true;
-            if ("JsonBackReference".equalsIgnoreCase(annotation.annotationType().getSimpleName())) return true;
-            if ("transient".equalsIgnoreCase(annotation.annotationType().getSimpleName())) return true;
+            String annoName = annotation.annotationType().getSimpleName();
+            if (skip_json_ignore && "JsonIgnore".equalsIgnoreCase(annoName)) return true;
+            if (skip_json_reference && "JsonBackReference".equalsIgnoreCase(annoName)) return true;
+            if (skip_transient && "transient".equalsIgnoreCase(annoName)) return true;
         }
         return false;
     }
@@ -314,6 +331,7 @@ public class BeanMapUtils {
     }
 
     public static Object getValOfBaseType(Class<?> c, Object val) {
+        if(null == val) return val;
         String v = "" + val;
         if (c == int.class || c == Integer.class)
             return Integer.parseInt(v);
@@ -340,7 +358,7 @@ public class BeanMapUtils {
     public static void main(String[] args) {
 
         class Foo {
-            private Integer id;
+            private transient Integer id;
             private String userName;
 
             public Integer getId() {
@@ -423,7 +441,7 @@ public class BeanMapUtils {
         Foo foo3 = new Foo();
         Map<String, Object> tMap = new HashMap<>();
 
-        foo.setId(111);
+        foo.setId(1);
         foo.setUserName("alice");
         System.err.println("foo1= " + foo.toString());
 
