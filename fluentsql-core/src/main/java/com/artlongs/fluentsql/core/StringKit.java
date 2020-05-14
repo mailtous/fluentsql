@@ -41,7 +41,7 @@ public class StringKit {
     }
 
     // 大写字母前面加上下划线并转为全小写
-    public static String enCodeUnderlined(String s) {
+    public static String toUnderline(String s) {
         if (null == s) return null;
         char[] chars = toLowerCaseFirstOne(s).toCharArray();
         StringBuilder temp = new StringBuilder();
@@ -55,7 +55,7 @@ public class StringKit {
     }
 
     // 删除下划线并转把后一个字母转成大写
-    public static String deCodeUnderlined(String str) {
+    public static String toCamel(String str) {
         if (null == str) return null;
         String[] splitArr = str.split("_");
         StringBuilder sb = new StringBuilder();
@@ -267,7 +267,7 @@ public class StringKit {
         if (len == 0) {
             return EMPTY_STRING_ARRAY;
         }
-        List list = new ArrayList();
+        List list = new ArrayList(len+1);
         int i = 0, start = 0;
         boolean match = false;
         boolean lastMatch = false;

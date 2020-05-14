@@ -34,8 +34,8 @@ public abstract class BaseQuery<T> implements Query{
     protected StringBuffer having = new StringBuffer(64);
     protected StringBuffer order = new StringBuffer(32);
     protected StringBuffer limit = new StringBuffer(32);
-    protected StringBuffer update = new StringBuffer(196);
-    protected StringBuffer insert = new StringBuffer(196);
+    protected StringBuffer update = new StringBuffer(256);
+    protected StringBuffer insert = new StringBuffer(256);
     protected String symbolsql = "";  // 还没有设值的 sql
     protected Map<String, Object> params = new HashMap<>(7);
     protected boolean checkSqlHack = true;
@@ -493,18 +493,16 @@ public abstract class BaseQuery<T> implements Query{
         this.insert.append(INSERT.symbol).append("`").append(getTableName(this.clz)).append("`");
         StringBuffer sql = new StringBuffer(128);
         Map<String, Object> fieldMap = new HashMap<String, Object>(32);
-        BeanMapUtils.builder().setSkipNullVal(false).setSkipTransient(true).c(getInstance(), fieldMap);
+        BeanMapUtils.builder().setSkipNullVal(false).setSkipTransient(true).toUnderline().c(getInstance(), fieldMap);
 
         sql.append(" (");
         for (String k : fieldMap.keySet()) {//key
-            String _k = StringKit.enCodeUnderlined(k);
-            sql.append("`").append(_k).append("`").append(", ");
+            sql.append("`").append(k).append("`").append(", ");
         }
         sql.deleteCharAt(sql.length() - 2);
         sql.append(") VALUES (");
         for (String k : fieldMap.keySet()) {// val
-            String _k = StringKit.enCodeUnderlined(k);
-            sql.append(":").append(_k).append(", ");
+            sql.append(":").append(k).append(", ");
         }
         sql.deleteCharAt(sql.length() - 2);
         sql.append(" ) ");
@@ -530,7 +528,7 @@ public abstract class BaseQuery<T> implements Query{
         Map<String, Object> fieldMap = new HashMap<String, Object>(20);
         BeanMapUtils.copy(entity, fieldMap);
         for (String k : fieldMap.keySet()) {
-            String _k = StringKit.enCodeUnderlined(k);
+            String _k = StringKit.toUnderline(k);
             sql.append(_k).append("=").append(keyPrev).append(_k).append(", ");
             addParams(keyPrev + _k, fieldMap.get(k));
         }
@@ -585,17 +583,17 @@ public abstract class BaseQuery<T> implements Query{
 
     private BaseQuery builWhereOfFilter(BaseQuery qe, PropertyFilter filter) {
         if(filter == null) return qe;
-        String filed = StringKit.enCodeUnderlined(filter.getFieldName());
+        String filed = StringKit.toUnderline(filter.getFieldName());
         PropertyFilter.MatchType matchType = filter.getMatchType();
         Object[] vv = filter.getValues();
         Object v1 = null;
         Object v2 = null;
         if(vv.length == 1){
             if(null == vv[0] && matchType != PropertyFilter.MatchType.ISNULL && matchType != PropertyFilter.MatchType.NOTNULL) return qe;
-            v1 = StringKit.enCodeUnderlined(String.valueOf(vv[0]));
+            v1 = StringKit.toUnderline(String.valueOf(vv[0]));
         }
         if(vv.length ==2){
-            v2 = StringKit.enCodeUnderlined(String.valueOf(vv[1]));
+            v2 = StringKit.toUnderline(String.valueOf(vv[1]));
         }
         switch (matchType) {
             case EQ:

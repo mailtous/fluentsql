@@ -110,7 +110,7 @@ public class Attr<T> {
         } else if (entity != null && !entity.name().isEmpty()) {
             return entity.name();
         }
-        return StringKit.enCodeUnderlined(c.getSimpleName());
+        return StringKit.toUnderline(c.getSimpleName());
     }
 
     /**
@@ -127,7 +127,7 @@ public class Attr<T> {
                 if(null != f.getAnnotation(Id.class) || f.getName().equals("id")){
                     f.setAccessible(true);
                     attr.clz = c.getClass();
-                    attr.column = StringKit.enCodeUnderlined(f.getName());
+                    attr.column = StringKit.toUnderline(f.getName());
                     attr.name = f.getName();
                     attr.val = f.get(c);
                     return attr;
@@ -142,7 +142,7 @@ public class Attr<T> {
 
 
     public String getUnderLineName(String arrtName) {
-        return StringKit.enCodeUnderlined(arrtName);
+        return StringKit.toUnderline(arrtName);
     }
 
 

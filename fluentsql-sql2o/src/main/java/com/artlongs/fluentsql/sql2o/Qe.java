@@ -118,7 +118,7 @@ public class Qe<T> extends LambdaQuery<T> {
                 Map<String, ?> fieldMap = new HashMap<>(32);
                 BeanMapUtils.copyTo(insertObj, fieldMap);
                 for (String key : fieldMap.keySet()) {
-                    q.addParameter(StringKit.enCodeUnderlined(key), fieldMap.get(key));
+                    q.addParameter(StringKit.toUnderline(key), fieldMap.get(key));
                 }
                 q.addToBatch();
                 fieldMap.clear();

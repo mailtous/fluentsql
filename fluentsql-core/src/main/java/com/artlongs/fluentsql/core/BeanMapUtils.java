@@ -145,10 +145,10 @@ public class BeanMapUtils {
 
     private static String formatSpell(String key) {
         if(to_underline){
-            return StringKit.enCodeUnderlined(key);
+            return StringKit.toUnderline(key);
         }
         if(to_camel){
-            return StringKit.deCodeUnderlined(key);
+            return StringKit.toCamel(key);
         }
         return key;
     }
@@ -201,8 +201,8 @@ public class BeanMapUtils {
         arr[1] = arr[1].toLowerCase();
     }
     private static void ignUnderline(String[] arr) {//去掉下划线
-        arr[0] = StringKit.deCodeUnderlined(arr[0]);
-        arr[1] = StringKit.deCodeUnderlined(arr[1]);
+        arr[0] = StringKit.toCamel(arr[0]);
+        arr[1] = StringKit.toCamel(arr[1]);
     }
     private static void spellFuzzyMatch(String[] arr) {//模糊拼写区别
         ignUnderline(arr);
