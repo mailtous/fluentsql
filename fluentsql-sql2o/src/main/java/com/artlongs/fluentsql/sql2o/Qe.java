@@ -124,7 +124,6 @@ public class Qe<T> extends LambdaQuery<T> {
                 fieldMap.clear();
             }
             q.executeBatch();
-            con.commit();
             return batchValues.size();
         } catch (Exception ex) {
             logger.warning(insertSql);
