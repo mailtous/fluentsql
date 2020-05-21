@@ -1,5 +1,7 @@
 package com.artlongs.fluentsql.core;
 
+import org.osgl.util.S;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -422,28 +424,47 @@ public abstract class BaseQuery<T> implements Query{
     }
 
     public BaseQuery<T> asc(String... val) {
-        addOrderBy(ASC.symbol, val);
+        addOrderBy(ASC.symbol, "",val);
         return this;
     }
-
     public BaseQuery<T> desc(String... val) {
-        addOrderBy(DESC.symbol, val);
+        addOrderBy(DESC.symbol, "",val);
+        return this;
+    }
+    public BaseQuery<T> ascOf(String tableName,String... val) {
+        addOrderBy(ASC.symbol, tableName,val);
+        return this;
+    }
+    public BaseQuery<T> descOf(String tableName,String... val) {
+        addOrderBy(DESC.symbol, tableName,val);
         return this;
     }
 
-    private void addOrderBy(String opt, String... val) {
+    private void addOrderBy(String opt,String tableName, String... val) {
         if (order.length() == 0) {
             order.append(ORDER.symbol);
         }
         for (String v : val) {
-            order.append(mainTableName).append(".").append(v).append(opt).append(",");
+            if(S.isEmpty(tableName)){
+                order.append(v).append(opt).append(",");
+            }else {
+                order.append(tableName).append(".").append(v).append(opt).append(",");
+            }
         }
     }
 
     public BaseQuery<T> group(String... columns) {
+        groupOf("", columns);
+        return this;
+    }
+    public BaseQuery<T> groupOf(String tableName,String... columns) {
         this.group.append(GROUP.symbol);
         for (String v : columns) {
-            group.append(mainTableName).append(".").append(v).append(",");
+            if(S.isEmpty(tableName)){
+                group.append(v).append(",");
+            }else {
+                group.append(tableName).append(".").append(v).append(",");
+            }
         }
         group.deleteCharAt(group.length() - 1);
         return this;
@@ -453,8 +474,6 @@ public abstract class BaseQuery<T> implements Query{
         if (this.group.length() > 0) {
             this.having.append(HAVING.symbol)
                     .append("(")
-                    .append(mainTableName)
-                    .append(".")
                     .append(column)
                     .append(opt.symbol)
                     .append(val)

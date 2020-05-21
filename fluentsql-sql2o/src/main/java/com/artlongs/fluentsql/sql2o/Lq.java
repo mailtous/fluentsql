@@ -1,6 +1,7 @@
 package com.artlongs.fluentsql.sql2o;
 
 import com.artlongs.fluentsql.core.Attr;
+import com.artlongs.fluentsql.core.Qf;
 import com.artlongs.fluentsql.core.mock.Dept;
 import com.artlongs.fluentsql.core.mock.User;
 import org.sql2o.Sql2o;
@@ -25,6 +26,7 @@ public class Lq<T> extends Qe<T> {
         String sql = new Lq<>(User.class)
                 .select(User::getUserName)
                 .select(new Attr<>(Dept::getDeptName))
+                .select(Qf.sum(User::getAge))
                 .leftJoin(Dept.class)
                 .andLike(User::getUserName, "jack")
                 .asc(User::getDeptId)
