@@ -1,32 +1,20 @@
 package com.artlongs.fluentsql.core.mock;
 
-import javax.persistence.Id;
 import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * Func :
  *
  * @author: leeton on 2019/6/21.
  */
-public class User {
-    @Id
-    private Integer id;
+public class User extends TopEntity {
+
     private Integer deptId;
     private String userName;
     private Integer age;
     private BigDecimal money;
     private Integer role;
     private String phone;
-    private Date createTime;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getDeptId() {
         return deptId;
@@ -76,11 +64,4 @@ public class User {
         this.phone = phone;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

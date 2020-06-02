@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -115,21 +116,21 @@ public class Attr<T> {
 
     /**
      * 取得实体类的真实ID与值
-     * @param c
+     * @param entity
      * @param <T>
      * @return
      */
-    public static <T> Attr getRealIdAttr(T c) {
-        Field fields[]=c.getClass().getDeclaredFields();//c 是实体类名称
+    public static <T> Attr getRealIdAttr(T entity) {
+        Set<Field> fields = BeanMapUtils.getFields(entity.getClass());
         Attr attr = new Attr();
         try {
             for (Field f : fields) {
                 if(null != f.getAnnotation(Id.class) || f.getName().equals("id")){
                     f.setAccessible(true);
-                    attr.clz = c.getClass();
-                    attr.column = StringKit.toUnderline(f.getName());
+                    attr.clz = entity.getClass();
                     attr.name = f.getName();
-                    attr.val = f.get(c);
+                    attr.column = f.getName().equals("id")?"id":StringKit.toUnderline(f.getName());
+                    attr.val = f.get(entity);
                     return attr;
                 }
             }
