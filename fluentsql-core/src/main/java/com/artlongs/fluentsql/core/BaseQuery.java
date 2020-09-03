@@ -902,7 +902,7 @@ public abstract class BaseQuery<T> implements Query{
     }
 
     private boolean isReadSql() {
-        return (this.update.length() == 0 && this.insert.length() == 0);
+        return (0==this.update.length() && 0==this.insert.length() && 0==this.del.length());
     }
 
     private StringBuffer buildSelect() {

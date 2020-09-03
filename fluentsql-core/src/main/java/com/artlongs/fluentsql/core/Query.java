@@ -8,6 +8,9 @@ import java.util.List;
  * @author: leeton on 2019/6/21.
  */
 public interface Query {
+
+    String build();
+
     <T> T to();
 
     <T> T to(Class<T> tClass);
