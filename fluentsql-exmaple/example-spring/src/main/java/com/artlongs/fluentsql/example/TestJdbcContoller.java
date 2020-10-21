@@ -7,6 +7,7 @@ import com.artlongs.fluentsql.jdbc.Qe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ public class TestJdbcContoller {
 
     @GetMapping("adduser/{id}")
     @ResponseBody
+    @Transactional
     public User addUser(@PathVariable Integer id) {
         User user = new User();
         user.setId(id);
@@ -53,6 +55,7 @@ public class TestJdbcContoller {
         user.setMoney(new BigDecimal(1000.22));
         user.setCreateTime(new Date());
         new Lq<User>(User.class, jdbcTemplate).toSave(user);
+        int i=1/0;
 
         return user;
     }

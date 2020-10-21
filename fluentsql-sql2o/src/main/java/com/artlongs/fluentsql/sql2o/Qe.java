@@ -216,20 +216,16 @@ public class Qe<T> extends LambdaQuery<T> {
 
     public int write(String sql, Map<String, Object> params) {
         checkProvider(sql2o);
-        Connection con = null;
-        try {
-            con = sql2o.beginTransaction();
+        try (Connection con = sql2o.open()) {
             Query q = con.createQuery(sql);
             setSql2oParam(q, params);
             q.setAutoDeriveColumnNames(true);
             q.executeUpdate();
-            con.commit();
-        } catch (Exception ex) {
-            throw new Sql2oException("写入数据库出错:"+ex);
+//            con.commit();
+            // 手动清理内存是种好习惯 :)
+            clear();
+            return con.getResult();
         }
-        // 手动清理内存是种好习惯 :)
-        clear();
-        return con.getResult();
     }
 
     private void checkProvider(Sql2o sql2o) {

@@ -46,6 +46,14 @@ public class DbUitls {
             urlInfo.port = "";
             urlInfo.dbName = urlbox[3];
             urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
+        } else if(url.contains("hsqldb") && url.contains("mem")){
+            //jdbc:hsqldb:mem:testDB
+            urlInfo.protocol = urlbox[0];
+            urlInfo.dbType = urlbox[1];
+            urlInfo.ip = "";
+            urlInfo.port = "";
+            urlInfo.dbName = urlbox[3];
+            urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
         } else {
             urlInfo.protocol = urlbox[0];
             urlInfo.dbType = urlbox[1];
@@ -69,6 +77,7 @@ public class DbUitls {
         datasource.setPassword(pwd);
         datasource.setMaximumPoolSize(maxPoolSize);
         datasource.setMinimumIdle(minIdle);
+        datasource.setAutoCommit(true);
         return datasource;
     }
 
@@ -79,7 +88,8 @@ public class DbUitls {
         H2("h2","org.h2.Driver"),
         ORACLE("oracle","oracle.jdbc.driver.OracleDriver"),
         MSSQL("sqlserver","com.microsoft.jdbc.sqlserver.SQLServerDriver"),
-        DB2("mysql","com.ibm.db2.jdbc.app.DB2Driver"),
+        DB2("db2","com.ibm.db2.jdbc.app.DB2Driver"),
+        HSQLDB("hsqldb","org.hsqldb.jdbc.JDBCDriver"),
         ;
         public String type;
         public String className;

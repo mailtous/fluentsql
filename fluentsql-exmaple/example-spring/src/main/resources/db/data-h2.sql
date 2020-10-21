@@ -1,9 +1,9 @@
-DELETE FROM user;
+DELETE FROM `user` ;
 
-INSERT INTO user (id, dept_id, user_name, age, money, role, phone,create_time) VALUES
+INSERT INTO `user` (id, dept_id, user_name, age, money, role, phone,create_time) VALUES
 (0, 1, '雷锋', 18, 100, 1, '10010','2017-1-1 1:1:1'),
 (1, 1, '三毛', 28, 100, 1, '10086','2017-1-1 1:1:1'),
 (2, 1, '小马', 18, 100, 1, '10000','2017-1-1 1:1:1'),
 (3, 2, '麻花', 18, 100, 1, '10000','2017-1-1 1:1:1'),
 (4, 2, '东狗', 28, 100, 1, '10086','2017-1-1 1:1:1'),
-(5, 1, '王五', 28, 100, 1, '10010','2017-1-1 1:1:1')
+(5, 1, '王五', 28, 100, 1, '10010','2017-1-1 1:1:1');

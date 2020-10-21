@@ -1,5 +1,6 @@
 package com.artlongs.fluentsql.core.mock;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Date;
  *
  * @author: leeton on 2020/6/2.
  */
-public class TopEntity {
+public class TopEntity implements Serializable {
     private Integer id;
     private Date createTime;
     private Date updateTime;
