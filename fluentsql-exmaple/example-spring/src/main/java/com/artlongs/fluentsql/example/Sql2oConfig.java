@@ -13,10 +13,8 @@ import org.springframework.transaction.annotation.TransactionManagementConfigure
 import org.sql2o.Sql2o;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 
-//@Import({Sql2oConn.class})
 //@ImportResource("classpath:tx.xml")
 @Configuration
 @EnableTransactionManagement
@@ -24,7 +22,7 @@ public class Sql2oConfig implements TransactionManagementConfigurer,EnvironmentA
 
     private Sql2o sql2o;
     private Environment env;
-    private  DataSource dataSource;
+    private static DataSource dataSource;
 
     @Bean
     @Primary
@@ -38,13 +36,13 @@ public class Sql2oConfig implements TransactionManagementConfigurer,EnvironmentA
             int maxPoolSize = getInt(env.getProperty(proPfix + "hikari.maximum-pool-size"), 10);
             int minIdle = getInt(env.getProperty(proPfix + "hikari.minimum-idle"), 5);
             dataSource = DbUitls.getHikariDataSource(url, username, password, dcn, maxPoolSize, minIdle);
-//            dataSource = new GenericDatasource(url, username, password);
         }
         return dataSource;
     }
 
 
     @Bean
+    @Primary
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
@@ -124,13 +122,7 @@ public class Sql2oConfig implements TransactionManagementConfigurer,EnvironmentA
         return sql2o;
     }*/
 
-    public void rollback(){
-        try {
-            sql2o.getConnectionSource().getConnection().rollback();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     private int getInt(Object s, int def) {
         if (null == s) return def;

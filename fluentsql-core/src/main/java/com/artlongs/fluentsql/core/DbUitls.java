@@ -16,6 +16,27 @@ public class DbUitls {
     public DbUitls() {
     }
 
+    public static DataSource getHikariDataSource(String url, String username, String pwd, String driverClassName, int maxPoolSize, int minIdle){
+        HikariDataSource datasource = new HikariDataSource();
+        datasource.setJdbcUrl(url);
+        if(null == driverClassName || "".equals(driverClassName)){
+            DbUitls dbUitls = DbUitls.parser(url);
+            driverClassName = dbUitls.getDriverClassName();
+        }
+        datasource.setDriverClassName(driverClassName);
+        datasource.setUsername(username);
+        datasource.setPassword(pwd);
+        datasource.setMaximumPoolSize(maxPoolSize);
+        datasource.setMinimumIdle(minIdle);
+        datasource.setConnectionInitSql("SELECT 1");
+        datasource.setAllowPoolSuspension(true);
+//        datasource.setAutoCommit(false);
+//        datasource.setAllowPoolSuspension(true);
+//        datasource.setTransactionIsolation("TRANSACTION_READ_COMMITTED");
+
+        return datasource;
+    }
+
     public static DbUitls parser(String dburl) {
         DbUitls urlInfo = new DbUitls();
         String url = dburl.toLowerCase();
@@ -38,16 +59,8 @@ public class DbUitls {
             urlInfo.port = urlbox[4];
             urlInfo.dbName = urlbox[5];
             urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
-        } else if(url.contains("h2") && url.contains("mem")){
+        } else if((url.contains("h2") || url.contains("hsqldb")) && url.contains("mem")){
             //jdbc:h2:mem:test
-            urlInfo.protocol = urlbox[0];
-            urlInfo.dbType = urlbox[1];
-            urlInfo.ip = "";
-            urlInfo.port = "";
-            urlInfo.dbName = urlbox[3];
-            urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
-        } else if(url.contains("hsqldb") && url.contains("mem")){
-            //jdbc:hsqldb:mem:testDB
             urlInfo.protocol = urlbox[0];
             urlInfo.dbType = urlbox[1];
             urlInfo.ip = "";
@@ -63,22 +76,6 @@ public class DbUitls {
             urlInfo.driverClassName = DbType.itemOf(urlInfo.dbType).className;
         }
         return urlInfo;
-    }
-
-    public static DataSource getHikariDataSource(String url, String username, String pwd, String driverClassName, int maxPoolSize, int minIdle){
-        HikariDataSource datasource = new HikariDataSource();
-        datasource.setJdbcUrl(url);
-        if(null == driverClassName || "".equals(driverClassName)){
-            DbUitls dbUitls = DbUitls.parser(url);
-            driverClassName = dbUitls.getDriverClassName();
-        }
-        datasource.setDriverClassName(driverClassName);
-        datasource.setUsername(username);
-        datasource.setPassword(pwd);
-        datasource.setMaximumPoolSize(maxPoolSize);
-        datasource.setMinimumIdle(minIdle);
-        datasource.setAutoCommit(true);
-        return datasource;
     }
 
     public enum DbType{

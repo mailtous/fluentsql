@@ -7,6 +7,12 @@ spring:
     password:
     schema: classpath:/db/schema-h2.sql
     data: classpath:/db/data-h2.sql
+    #connection-test-query: SELECT 1
+    #test-while-idle: true
+    #test-on-borrow: true
+    #validation-interval: 10000
+    #log-validation-errors: true
+    #validation-query: SELECT 1
 
 h2:
     console:

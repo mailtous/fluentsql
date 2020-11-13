@@ -109,10 +109,10 @@ public class Qe<T> extends LambdaQuery<T> {
         checkProvider(sql2o);
         String insertSql = buildBatchInsertSql().buildSymbolsql();
         Assert.isTrue(insertSql.toLowerCase().indexOf("where")!=-1,"Batch INSERT canot include [WHERR] condition. " + insertSql);
-        Connection con = null;
+        Connection connection = null;
         try {
-            con = sql2o.open();
-            Query q = con.createQuery(insertSql);
+            connection = sql2o.open();
+            Query q = connection.createQuery(insertSql);
             q.setAutoDeriveColumnNames(true);
             for (Object insertObj : batchValues) {
                 Map<String, ?> fieldMap = new HashMap<>(32);
@@ -189,13 +189,12 @@ public class Qe<T> extends LambdaQuery<T> {
     public List getList(String sql, Map<String, Object> params, Class<T> tClass) {
         checkProvider(sql2o);
         List<T> list = new ArrayList<>();
-        try (Connection con = sql2o.open()) {
-            Query q = con.createQuery(sql);
+        try (Connection connection = sql2o.open()) {
+            Query q = connection.createQuery(sql);
             setSql2oParam(q, params);
             q.setAutoDeriveColumnNames(true);
             list = q.executeAndFetch(tClass);
         }
-        // 手动清理内存是种好习惯 :)
         clear();
         return 0 == list.size() ? new ArrayList<>() : list;
     }
@@ -203,33 +202,40 @@ public class Qe<T> extends LambdaQuery<T> {
     public <T> T single(String sql, Map<String, Object> params, Class tClass) {
         checkProvider(sql2o);
         Object result = null;
-        try (Connection con = sql2o.open()) {
-            Query q = con.createQuery(sql);
+        try (Connection connection = sql2o.open()) {
+            Query q = connection.createQuery(sql);
             setSql2oParam(q, params);
             q.setAutoDeriveColumnNames(true);
             result = q.executeAndFetchFirst(tClass);
         }
-        // 手动清理内存是种好习惯 :)
+
         clear();
         return (T)result;
     }
 
     public int write(String sql, Map<String, Object> params) {
         checkProvider(sql2o);
-        try (Connection con = sql2o.open()) {
-            Query q = con.createQuery(sql);
+        try (Connection connection = sql2o.beginTransaction()){
+            connection.setRollbackOnClose(true);
+            connection.setRollbackOnException(true);
+            Query q = connection.createQuery(sql);
             setSql2oParam(q, params);
             q.setAutoDeriveColumnNames(true);
             q.executeUpdate();
-//            con.commit();
-            // 手动清理内存是种好习惯 :)
-            clear();
-            return con.getResult();
+            connection.commit();
+
+
+            int rows = connection.getResult();
+            Query q1 = connection.createQuery( " SELECT 1");
+            q1.executeAndFetch(Integer.class);
+
+//            int i = 1/0;
+            return connection.getResult();
         }
     }
 
     private void checkProvider(Sql2o sql2o) {
-        Assert.isNull(sql2o,"Sql2o 不能为 NULL,请先传入.");
+        Assert.isNull(sql2o,"Sql2o must be not NULL !");
     }
 
     private void setSql2oParam(Query query, Map<String,Object> parms) {
@@ -245,7 +251,7 @@ public class Qe<T> extends LambdaQuery<T> {
 
 
    public static void main(String[] args) throws Exception {
-       String sql = new Qe(User.class)
+       String sql = new Qe<User>(User.class)
                .select("user_name")
 //            .andIn("dept_id", new Qe(Dept.class).select("id").andGt("id", 0))
                .sum("id", Dept.class)

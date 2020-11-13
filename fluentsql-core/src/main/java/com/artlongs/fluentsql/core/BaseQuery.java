@@ -954,7 +954,7 @@ public abstract class BaseQuery<T> implements Query{
         return this.from;
     }
 
-    public void clear() {
+    public void clear() { // 手动清理内存是种好习惯 :)
         initSqlTemplate();
         clearMap(params);
     }
