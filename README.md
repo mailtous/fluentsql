@@ -1,3 +1,4 @@
+# 注意项目迁移到了: (https://gitee.com/artlongs/fluentsql)
 # Fluent-SQL [![](https://jitpack.io/v/mailtous/fluentsql.svg)](https://jitpack.io/#mailtous/fluentsql)
 我们不生产SQL,我们只是SQL的搬运工!
 
@@ -50,18 +51,17 @@ String sql = new Lq<>(User.class)
                 .build();
 ```
 # MAVEN 
-1. 在您的 POM 文件增加新的仓库 jitpack.io
-2. 增加对本项目的依赖,您可以只选择对子项目的依赖 fluentsql-sql2o | fluentsql-jdbctemplate
+增加对本项目的依赖,您可以只选择对子项目的依赖 fluentsql-sql2o | fluentsql-jdbctemplate
 ```xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-	<dependency>
-	    <groupId>com.github.mailtous</groupId>
-	    <artifactId>fluentsql</artifactId>
-	    <version>0.0.1-snapshot</version>
-	</dependency>
+ <dependency>
+  <groupId>com.artfii.fluentsql</groupId>
+  <artifactId>fluentsql-jdbctemplate</artifactId>
+  <version>0.0.6-SNAPSHOT</version>
+</dependency>
+<!-- 或 fluentsql-sql2o -->
+<dependency>
+  <groupId>com.artfii.fluentsql</groupId>
+  <artifactId>fluentsql-sql2o</artifactId>
+  <version>0.0.6-SNAPSHOT</version>
+</dependency>
 ```
